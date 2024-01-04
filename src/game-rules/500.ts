@@ -1,6 +1,7 @@
 import { IGameRules, TLead } from "../types/game-rules";
 import { TCall } from "../types/game-rules";
-import { TScoreCard } from "../types/score-card";
+import { TScoreCard, TSimpleScore } from "../types/score-card";
+import { getHighLow, getPlayer, getPlayerError, rankPlayers } from "./game-utils";
 
 
 /**
@@ -12,15 +13,17 @@ import { TScoreCard } from "../types/score-card";
  *
  * @returns The true score for the player.
  */
-export const get500Score = (score: number, lead: boolean = false, call: TCall|null) : number => {
+export const get500Score = (score: number, playerID: string, call: TLead) : number => {
   if (call === null) {
     throw new Error(
       '500.getScore() expects third parameter call not to be null',
     );
   }
 
+  const isLead = (playerID === call.playerID);
+
   if (call.id === 'M' || call.id === 'OM') {
-    if (lead === false) {
+    if (isLead === false) {
       return 0;
     }
 
@@ -29,45 +32,13 @@ export const get500Score = (score: number, lead: boolean = false, call: TCall|nu
       : call.score;
   }
 
-  if (lead === false) {
+  if (isLead === false) {
     return score * 10;
   }
 
   return (score >= call.tricks)
     ? call.score * -1
     : call.score;
-};
-
-/**
- * Get the player/team object matching the player ID
- *
- * @param players  List of players for the game.
- * @param playerID ID of player/team being requested
- *
- * @returns A single player/team object if matched by ID or
- *          NULL if ID could not be matched
- */
-export const getPlayer = (players : Array<TScoreCard>, playerID : string) : TScoreCard|null => {
-  for (let a = 0; a < players.length; a += 1) {
-    if (players[a].id === playerID) {
-      return players[a];
-    }
-  }
-  return null;
-};
-
-/**
- * Get error message when unknown player ID has been supplied
- *
- * @param method   Name of method that will throw the error
- * @param playerID ID of player/team that could not be found
- *
- * @returns Message to use when throwing an error.
- */
-export const getPlayerError = (method: string, playerID: string) : string => {
-  return `500.${method}() expects argument \`playerID\` to be the ` +
-         `name of a known player for this game. "${playerID}" did ` +
-         'not match any known players';
 };
 
 /**
@@ -81,75 +52,6 @@ export const getLeadError = (method: string) : string => {
   return `500.${method}() expects lead to have already been set ` +
          'for this hand. Lead has not yet been set.';
 }
-
-/**
- * Set the position/rank of players based on their score.
- *
- * @param players list of players in game
- *
- * @returns Updated list of players with latest ranking set.
- */
-export const rankPlayers = (players: Array<TScoreCard>) : Array<TScoreCard> => {
-  const ranking = players.map((player, index) => ({i, index, id: player.id, total: player.total, rank: 0}));
-
-  // Sort players from highest to lowest by their score
-  ranking.sort((a, b) => {
-    if (a.total > b.total) {
-      return 1;
-    } else if (a.total < b.total) {
-      return -1;
-    } else {
-      return 0;
-    }
-  });
-
-  // Set players rank based on their sorted position
-  for (let a = 0; a < ranking.length; a += 1) {
-    ranking[a].rank = a + 1;
-  }
-
-  // Put players back in their original order
-  ranking.sort((a, b) => {
-    if (a.i > b.i) {
-      return 1;
-    } else if (a.i < b.i) {
-      return -1;
-    } else {
-      return 0;
-    }
-  });
-
-  return players.map((player, index) => {
-    if (player.id !== ranking[index].id) {
-      throw new Error(
-        `Player ${player.id} could not be ranked because ID ` +
-        'didn\'t match rank ID.',
-      );
-    }
-
-    return {
-      ...player,
-      position: ranking[index].rank
-    };
-  });
-}
-
-export const updateScoreAndRank = (players: Array<TScoreCard>, player: TScoreCard, newScores: Array<number>) => {
-
-  const _tmp = {
-    ...player,
-    scores: newScores,
-    total: newScores.reduce((_total, _score) => (_total + _score), 0),
-  };
-
-  return {
-    players: rankPlayers(
-      players.map((_player) => (_player.id === _tmp.id) ? _player : _tmp)
-    ),
-    player: _tmp,
-  };
-};
-
 export class FiveHundred implements IGameRules {
   // ================================================================
   // START: property declarations
@@ -157,25 +59,25 @@ export class FiveHundred implements IGameRules {
   // ----------------------------------------------------------------
   // START: private property declarations
 
+  _canUpdate: boolean = false;
   _gameOver: boolean = false;
-  _players: Array<TScoreCard> = [];
   _lead: TLead|null = null;
-  _pastLeads: Array<TLead> = [];
-  _winner: string = '';
   _looser: string = '';
+  _pastLeads: Array<TLead> = [];
+  _teams: Array<TScoreCard> = [];
+  _winner: string = '';
 
   //  END:  private property declarations
   // ----------------------------------------------------------------
   // START: public property declarations
 
-  readonly name: string = '500';
-  readonly rules: string = '';
+  readonly lowestWins: boolean = false;
   readonly maxPlayers: number|null = 2;
   readonly maxScore: number|null = 500;
   readonly minPlayers: number = 2;
   readonly minScore: number|null = -500;
+  readonly name: string = '500';
   readonly onlyWinOnCall: boolean = true;
-  readonly requiresCall: boolean = true;
   readonly possibleCalls: Array<TCall> = [
     { id: '6S', name: 'Six spades', score: 40, tricks: 6 },
     { id: '6C', name: 'Six clubs', score: 60, tricks: 6 },
@@ -205,6 +107,9 @@ export class FiveHundred implements IGameRules {
     { id: '10NT', name: 'Ten no trumps', score: 520, tricks: 10 },
     { id: 'OM', name: 'Open misere', score: 500, tricks: 10 },
   ];
+  readonly requiresCall: boolean = true;
+  readonly requiresTeam: boolean = true;
+  readonly rules: string = '';
 
   //  END:  public property declarations
   // ----------------------------------------------------------------
@@ -215,11 +120,11 @@ export class FiveHundred implements IGameRules {
 
   constructor(players: Array<string>) {
     this.gameOver = () => this._gameOver;
-    this._players = players.map((player) => ({
+    this._teams = players.map((player) => ({
       id: player,
       scores: [],
       total: 0,
-      position: 0;
+      position: 0,
     }));
   }
 
@@ -227,18 +132,40 @@ export class FiveHundred implements IGameRules {
     return this._lead !== null && this._gameOver === false;
   };
 
+  canUpdate () : boolean {
+    return this._canUpdate;
+  };
+
+  forceGameEnd () : void {
+    this._teams = rankPlayers(this._teams);
+    const data = getHighLow(this._teams);
+
+    this._winner = data.high.id;
+    this._looser = data.low.id;
+
+    this._gameOver = true;
+    this._canUpdate = false;
+  };
+
+  /**
+   * Check whether the game is over.
+   *
+   * NOTE: If the private _gameOver property is false, gameOver() will
+   *
+   * @returns TRUE if one or more players has a score that is creater
+   *          than 500 or less than -500. FALSE otherwise.
+   */
   gameOver () : boolean {
     if (this._gameOver === false) {
-      for (let a = 0; a < this._players.length; a += 1) {
-        if (this._players[a].total >= 500) {
-          this._winner = this._players[a].id;
-          this._gameOver = true;
-        } else if (this._players[a].total <= -500) {
-          this._looser = this._players[a].id;
-          this._gameOver = true;
-          break;
-        }
+      const data = getHighLow(this._teams);
+
+      if (data.high.score >= 500 || data.low.score <= 500) {
+        this._gameOver = true;
+        this._winner = data.high.id;
+        this._looser = data.low.id;
       }
+
+      this._canUpdate = !this._gameOver;
     }
 
     return this._gameOver
@@ -261,16 +188,29 @@ export class FiveHundred implements IGameRules {
       : '';
   };
 
-  getScore (score: number, playerID: string) : number {
+  getPlayers () : Array<TScoreCard> {
+    return this._teams;
+  }
+
+  getScore (playerID: string) : number {
     if (this._lead === null) {
       throw new Error(getLeadError('setScore'));
     }
-    if (getPlayer(this._players, playerID) === null) {
-      throw new Error(getPlayerError('setLead', playerID));
+    const player = getPlayer(this._teams, playerID);
+    if (player === null) {
+      throw new Error(getPlayerError(this.name, 'setLead', playerID));
     }
 
-    return get500Score(score, (playerID === this._lead.playerID), this._lead);
+    return player.total;
   };
+
+  getCurrentScores () : Array<TSimpleScore> {
+    return this._teams.map((player) => {
+      const output : TSimpleScore = {};
+      output[player.id] = player.total;
+      return output;
+    })
+  }
 
   getWinner () : string {
     return (this.gameOver() === true)
@@ -284,10 +224,10 @@ export class FiveHundred implements IGameRules {
     }
 
     this._lead = null;
-    const player = getPlayer(this._players, playerID);
+    const player = getPlayer(this._teams, playerID);
 
     if (player === null) {
-      throw new Error(getPlayerError('setLead', playerID));
+      throw new Error(getPlayerError(this.name, 'setLead', playerID));
     }
 
     for (let a = 0; a < this.possibleCalls.length; a += 1) {
@@ -310,29 +250,28 @@ export class FiveHundred implements IGameRules {
   };
 
   setScore (playerID: string, score: number) : number {
-    const tmp = getPlayer(this._players, playerID);
+    const tmp = getPlayer(this._teams, playerID);
     if (tmp === null) {
-      throw new Error(getPlayerError('setScore', playerID));
+      throw new Error(getPlayerError(this.name, 'setScore', playerID));
     }
     if (this._lead === null) {
       throw new Error(getLeadError('setScore'));
     }
-    const isLead = (playerID === this._lead.playerID);
 
     return this._updateRankAndScore(
       tmp,
       [
         ...tmp.scores,
-        get500Score(score, isLead, this._lead),
+        get500Score(score, playerID, this._lead),
       ]
     );
   };
 
   updateScore (playerID: string, score: number, round: number) : number {
-    const tmp = getPlayer(this._players, playerID);
+    const tmp = getPlayer(this._teams, playerID);
     const _r = round - 1;
     if (tmp === null) {
-      throw new Error(getPlayerError('setScore', playerID));
+      throw new Error(getPlayerError(this.name, 'setScore', playerID));
     }
     const lead = (round === this._pastLeads.length)
       ? this._lead
@@ -343,12 +282,11 @@ export class FiveHundred implements IGameRules {
         `500.updateScore() could not determin lead for round ${round}`,
       );
     }
-    const isLead = (playerID === lead.playerID);
 
     return this._updateRankAndScore(
       tmp,
       tmp.scores.map((_score, _index) => (_r === _index)
-        ? get500Score(score, isLead, this._lead)
+        ? get500Score(score, playerID, this._lead as TLead)
         : _score
       ),
     );
@@ -358,12 +296,26 @@ export class FiveHundred implements IGameRules {
     const _tmp = {
       ...player,
       scores: newScores,
-      total: newScores.reduce((_total, _score) => (_total + _score), 0),
+      total: newScores.reduce(
+        (_total, _score) => (_total + _score),
+        0,
+      ),
     };
 
-    this._players = rankPlayers(
-      this._players.map((_player) => (_player.id === _tmp.id) ? _player : _tmp)
+    this._teams = rankPlayers(
+      this._teams.map(
+        (_team) => (_team.id === _tmp.id)
+          ? _team
+          : _tmp,
+      ),
     );
+
+    if (this._teams[0].scores.length === this._teams[1].scores.length) {
+      if (this._lead !== null) {
+        this._pastLeads = [...this._pastLeads, this._lead];
+        this._lead = null;
+      }
+    }
 
     return _tmp.total;
   }

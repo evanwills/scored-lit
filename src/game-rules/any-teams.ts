@@ -1,3 +1,4 @@
+import { TWinnerLooser } from "../types/game-data";
 import { IGameRules } from "../types/game-rules";
 import { TCall } from "../types/game-rules";
 import { TScoreCard, TSimpleScore } from "../types/score-card";
@@ -16,21 +17,25 @@ export class CrazyEights implements IGameRules {
   _winner: string = '';
   _gameOver: boolean = false;
   _players: Array<TScoreCard> = [];
+  _lowestWins: boolean = false;
+  _maxScore: number|null = 10000;
+  _minScore: number|null = 0;
+  _localName: string = '';
 
   //  END:  private property declarations
   // ----------------------------------------------------------------
   // START: public property declarations
 
-  readonly lowestWins: boolean = true;
-  readonly name: string = 'Crazy Eights';
-  readonly maxPlayers: number|null = 0;
-  readonly maxScore: number = 100;
+  readonly lowestWins: boolean = false;
+  readonly name: string = 'Any (teams)';
+  readonly maxPlayers: number|null = null;
+  readonly maxScore: number|null = null;
   readonly minPlayers: number = 2;
   readonly minScore: number|null = null;
   readonly onlyWinOnCall: boolean = false;
   readonly possibleCalls: TCall[] = [];
   readonly requiresCall: boolean = false;
-  readonly requiresTeam: boolean = false;
+  readonly requiresTeam: boolean = true;
   readonly rules: string = '';
 
   //  END:  public property declarations
@@ -60,10 +65,7 @@ export class CrazyEights implements IGameRules {
 
   forceGameEnd () : void {
     if (this._gameOver === false) {
-      const data = getHighLow(this._players);
-
-      this._winner = data.low.id;
-      this._looser = data.high.id;
+      this._setWinnerAndLooser(getHighLow(this._players));
 
       this._gameOver = true;
       this._canUpdate = false;
@@ -82,11 +84,13 @@ export class CrazyEights implements IGameRules {
     if (this._gameOver === false) {
       const data = getHighLow(this._players);
 
-      this._gameOver = (this.maxScore >= data.high.score);
+      this._gameOver = (
+        (this._maxScore !== null && data.high.score >= this._maxScore) ||
+        (this._minScore !== null && data.low.score <= this._minScore)
+      );
 
       if (this._gameOver === true) {
-        this._winner = data.low.id;
-        this._looser = data.high.id;
+        this._setWinnerAndLooser(data);
       }
 
       this._canUpdate = !this._gameOver;
@@ -189,5 +193,15 @@ export class CrazyEights implements IGameRules {
     );
 
     return _tmp.total;
+  }
+
+  _setWinnerAndLooser (data: TWinnerLooser) : void {
+    if (this._lowestWins === true) {
+      this._winner = data.high.id;
+      this._looser = data.low.id;
+    } else {
+      this._winner = data.high.id;
+      this._looser = data.low.id;
+    }
   }
 }

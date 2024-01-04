@@ -10,6 +10,9 @@ A game sheet is a wrapper component for a single game
 
 New game mode is the default mod for `<game-sheet>`. It allows for selecting the type of game being played
 
+#### Playing mode
+
+#### Complete mode.
 
 ## `<game-player>`
 

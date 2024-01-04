@@ -1,0 +1,5 @@
+export const pastGameActions = {
+  ADD_GAME: 'PAST_GAME_ADD_NEW',
+  UPDATE_GAME: 'PAST_GAME_UPDATE',
+  DELETE_GAME: 'PAST_GAME_DELETE',
+}

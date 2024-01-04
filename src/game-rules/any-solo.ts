@@ -1,7 +1,7 @@
 import { IGameRules } from "../types/game-rules";
 import { TCall } from "../types/game-rules";
 import { TScoreCard, TSimpleScore } from "../types/score-card";
-import { getHighLow, getPlayer, getPlayerError, rankPlayers } from "./game-utils";
+import { getPlayer, getPlayerError, rankPlayers } from "./game-utils";
 
 
 export class CrazyEights implements IGameRules {
@@ -60,10 +60,32 @@ export class CrazyEights implements IGameRules {
 
   forceGameEnd () : void {
     if (this._gameOver === false) {
-      const data = getHighLow(this._players);
+      let winnerScore = this.maxScore;
+      let winnerID = '';
+      let looserScore = this.maxScore;
+      let looserID = '';
+      let prefix = '';
 
-      this._winner = data.low.id;
-      this._looser = data.high.id;
+      for (let a = 0; a < this._players.length; a += 1) {
+        if (this._players[a].total > looserScore) {
+          looserScore = this._players[a].total;
+          looserID = this._players[a].id
+        } else if (this._players[a].total === looserScore) {
+          prefix = (winnerID !== '')
+            ? ', '
+            : '';
+          looserID += prefix + this._players[a].id;
+        }
+        if (this._players[a].total < winnerScore) {
+          winnerScore = this._players[a].total;
+          winnerID = this._players[a].id
+        } else if (this._players[a].total === winnerScore) {
+          prefix = (winnerID !== '')
+            ? ', '
+            : '';
+            winnerID += prefix + this._players[a].id;
+        }
+      }
 
       this._gameOver = true;
       this._canUpdate = false;
@@ -80,13 +102,23 @@ export class CrazyEights implements IGameRules {
    */
   gameOver () : boolean {
     if (this._gameOver === false) {
-      const data = getHighLow(this._players);
+      let looserScore = 100;
+      let looserID = '';
 
-      this._gameOver = (this.maxScore >= data.high.score);
+      for (let a = 0; a < this._players.length; a += 1) {
+        if (this._players[a].total >= 100) {
+          this._looser = this._players[a].id;
+          this._gameOver = true;
+        } else if (this._players[a].total < looserScore) {
+          looserScore = this._players[a].total;
+          looserID = this._players[a].id
+        } else if (this._players[a].total === looserScore) {
+          const prefix = (looserID !== '')
+            ? ', '
+            : '';
 
-      if (this._gameOver === true) {
-        this._winner = data.low.id;
-        this._looser = data.high.id;
+          looserID += prefix + this._players[a].id;
+        }
       }
 
       this._canUpdate = !this._gameOver;
