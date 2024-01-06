@@ -1,5 +1,11 @@
-export default {
+import { TScoredStore } from '../../types/game-data';
+
+const wholeStore : TScoredStore = {
   currentGame: null,
   players: [],
-  past: [],
-}
+  teams: [],
+  pastGames: [],
+  customGames: [],
+};
+
+export default wholeStore;

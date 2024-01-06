@@ -8,7 +8,7 @@ export const pastGameReducer : Reducer = (
   action : AnyAction
 ) => {
   switch (action.type) {
-    case pastGameActions.ADD_GAME:
+    case pastGameActions.ADD_NEW:
       for (let a = 0; state.length; a += 1) {
         if (action.payload.start === state[a].start) {
           throw new Error(
@@ -20,10 +20,10 @@ export const pastGameReducer : Reducer = (
 
       return state.push(action.payload);
 
-    case pastGameActions.DELETE_GAME:
+    case pastGameActions.DELETE:
       return state.filter((game) => game.start !== action.payload);
 
-    case pastGameActions.UPDATE_GAME:
+    case pastGameActions.UPDATE:
       return state.map(
         (game) => (game.start === action.payload.start)
           ? action.payload

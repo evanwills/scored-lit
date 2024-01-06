@@ -1,0 +1,5 @@
+export const customGamesActions = {
+  CREATE: 'CUSTOM_GAME_CREATE',
+  DELETE: 'CUSTOM_GAME_DELETE',
+  UPDATE: 'CUSTOM_GAME_UPDATE',
+}
