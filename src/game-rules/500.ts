@@ -77,7 +77,7 @@ export class FiveHundred implements IGameRules {
   readonly minPlayers: number = 2;
   readonly minScore: number|null = -500;
   readonly name: string = '500';
-  readonly onlyWinOnCall: boolean = true;
+  readonly callToWin: boolean = true;
   readonly possibleCalls: Array<TCall> = [
     { id: '6S', name: 'Six spades', score: 40, tricks: 6 },
     { id: '6C', name: 'Six clubs', score: 60, tricks: 6 },

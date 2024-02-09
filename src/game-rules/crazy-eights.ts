@@ -27,7 +27,7 @@ export class CrazyEights implements IGameRules {
   readonly maxScore: number = 100;
   readonly minPlayers: number = 2;
   readonly minScore: number|null = null;
-  readonly onlyWinOnCall: boolean = false;
+  readonly callToWin: boolean = false;
   readonly possibleCalls: Array<TCall> = [];
   readonly requiresCall: boolean = false;
   readonly requiresTeam: boolean = false;

@@ -40,7 +40,7 @@ export interface IGameRules {
   readonly minPlayers: number,
   readonly minScore: number|null,
   readonly name: string,
-  readonly onlyWinOnCall: boolean,
+  readonly callToWin: boolean,
   readonly possibleCalls: Array<TCall>
   readonly requiresTeam: boolean,
   readonly requiresCall: boolean,
