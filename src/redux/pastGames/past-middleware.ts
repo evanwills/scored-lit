@@ -10,7 +10,7 @@ export const pastGameMiddleware : Middleware = (store) => (next: Dispatch) => (a
 
       // Find the past game to resume
       const oldGame = state.pastGames.find(
-        (game : TGameData) : boolean => (game.start === action.payload as number && game.forced === true)
+        (game : TGameData) : boolean => (game.id === action.payload && game.forced === true)
       );
 
       if (typeof oldGame !== 'undefined') {

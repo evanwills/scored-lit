@@ -1,10 +1,16 @@
-export type TPlayer = {
+export interface IPlayer {
   id: string,
-  firstName: string,
-  lastName: string,
+  name: string,
+}
+
+export interface IIndividualPlayer extends IPlayer {
+  id: string,
+  name: string,
+  secondName: string,
 };
 
-export type TTeam = {
+export interface TTeam extends IPlayer {
+  id: string,
   name: string,
-  playerIds: Array<string>,
+  members: Array<TPlayer>,
 };

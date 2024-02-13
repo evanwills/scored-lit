@@ -1,5 +1,5 @@
-import { TPlayer, TTeam } from "./players";
-import { TGameScoreCard, TScoreCard } from "./score-card";
+import { IPlayer, TPlayer, TTeam } from "./players";
+import { TScoreCard } from "./score-card";
 
 export type TCustomGame = {
   /**
@@ -86,6 +86,12 @@ export type TCustomGame = {
   requiresTeam: boolean,
 }
 
+export type TGameLead = {
+  player: IPlayer,
+  call: number,
+  suit: string,
+}
+
 export enum EGameStates {
   SET_TYPE,
   ADD_PLAYERS,
@@ -98,6 +104,11 @@ export enum EGameStates {
  */
 export type TGameData = {
   /**
+   * @property ISO 8601 date-time string for when the game ended
+   */
+  end: string|null,
+
+  /**
    * Whether or not the game was force finished.
    *
    * If `forced` is TRUE, the game can be resumed at a later date.
@@ -107,20 +118,13 @@ export type TGameData = {
   forced: boolean,
 
   /**
-   * @property List of players (or teams) who are/were playing this
-   *           game
+   * Unique ID for this game
+   *
+   * @property
    */
-  players: Array<string>,
+  id: string,
 
-  /**
-   * @property Score cards for each player
-   */
-  scores: TGameScoreCard,
-
-  /**
-   * @property Timestamp for when the game started
-   */
-  start: number,
+  lead: TGameLead|null,
 
   /**
    * State of the current game
@@ -136,7 +140,30 @@ export type TGameData = {
    *
    * @property
    */
-  state: EGameStates,
+  mode: EGameStates,
+
+  /**
+   * @property List of players (or teams) who are/were playing this
+   *           game
+   */
+  players: Array<IPlayer>,
+
+  /**
+   * @property Score cards for each player
+   */
+  scores: Array<TScoreCard>,
+
+  /**
+   * ISO 8601 date-time string for when the game started
+   *
+   * > __Note:__ `start` will be set on initialisation of a new game
+   * >           and will be updated when game's `state` value goes
+   * >           from `EGameStates.ADD_PLAYERS`
+   * >           to   `EGameStates.PLAYING`
+   *
+   * @property
+   */
+  start: string,
 
   /**
    * @property Whether or not the players are actually teams
@@ -144,14 +171,14 @@ export type TGameData = {
   teams: boolean,
 
   /**
-   * @property The type of game this score is for
+   * @property The type ID of game this score is for
    */
   type: string,
 
   /**
    * @property ID of the winning player or team
    */
-  winner: string,
+  winner: string|null,
 };
 
 /**

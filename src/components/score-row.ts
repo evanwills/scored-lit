@@ -1,6 +1,7 @@
 import { html, LitElement, TemplateResult } from "lit";
 import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from "lit/directives/if-defined.js";
+import { sumScores } from "../utils/general.utils";
 
 export const clickToEditScore = (
   handler : CallableFunction,
@@ -90,7 +91,6 @@ export class ScoreRow extends LitElement {
     if (this.min !== 98765) {
       this._min = this.min;
     }
-
   }
 
   /* ... */
@@ -110,9 +110,7 @@ export class ScoreRow extends LitElement {
           : submitScore
       }
 
-      for (let a = 0; a <= this.index; a += 1) {
-        sum += this.scores[a];
-      }
+      sum = sumScores(this.scores, this.index);
     }
 
 
