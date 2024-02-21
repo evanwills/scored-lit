@@ -1,6 +1,6 @@
-import { AnyAction, Reducer } from "redux";
-import { EGameStates, TGameData } from "../../types/game-data";
-import { sumScores } from "../../utils/general.utils";
+import { AnyAction, Reducer } from 'redux';
+import { EGameStates, TGameData } from '../../types/game-data.d';
+import { sumScores } from '../../utils/general.utils';
 
 const notSet = 'There is no game set yet.';
 

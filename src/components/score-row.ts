@@ -1,7 +1,7 @@
-import { html, LitElement, TemplateResult } from "lit";
+import { html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { ifDefined } from "lit/directives/if-defined.js";
-import { sumScores } from "../utils/general.utils";
+import { ifDefined } from 'lit/directives/if-defined.js';
+import { sumScores } from '../utils/general.utils';
 
 export const clickToEditScore = (
   handler : CallableFunction,
@@ -132,6 +132,6 @@ export class ScoreRow extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "score-row": ScoreRow;
+    'score-row': ScoreRow;
   }
 }

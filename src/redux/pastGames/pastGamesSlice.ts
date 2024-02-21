@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { TGameData } from "../../types/game-data";
-import { addNewPastGame, deletePastGame, updatePastGame } from "./past-reducers";
+import { createSlice } from '@reduxjs/toolkit';
+import { TGameData } from '../../types/game-data.d';
+import { addNewPastGame, deletePastGame, updatePastGame } from './past-reducers';
 
 export const initialState : Array<TGameData> = [];
 

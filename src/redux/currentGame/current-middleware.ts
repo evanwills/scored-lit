@@ -1,7 +1,7 @@
-import { AnyAction, Dispatch, Middleware } from "@reduxjs/toolkit";
-import { currentGameActions } from "./current-actions";
-import { EGameStates, TGameData, TScoredStore } from "../../types/game-data";
-import { pastGameActions } from "../pastGames/past-actions";
+import { AnyAction, Dispatch, Middleware } from '@reduxjs/toolkit';
+import { currentGameActions } from './current-actions';
+import { EGameStates, TGameData, TScoredStore } from '../../types/game-data.d';
+import { pastGameActions } from '../pastGames/past-actions';
 
 export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) => (action: AnyAction) => {
   const state : TScoredStore = store.getState();

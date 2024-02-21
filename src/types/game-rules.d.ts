@@ -1,4 +1,4 @@
-import { TGameScoreCard, TScoreCard } from "./score-card"
+import { TGameScoreCard, TScoreCard } from './score-card'
 
 export type TCall = {
   id: string,

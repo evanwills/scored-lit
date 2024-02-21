@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { TGameData } from "../../types/game-data";
-import { endGameForced, endGameNatural, setGameType, setLead, setNewGame, setNewSameGame, setPlayer, setSameGameNewPlayers, setScore, updateLead, updateScore } from "./current-reducers";
+import { createSlice } from '@reduxjs/toolkit';
+import { TGameData } from '../../types/game-data.d';
+import { endGameForced, endGameNatural, setGameType, setLead, setNewGame, setNewSameGame, setPlayer, setSameGameNewPlayers, setScore, updateLead, updateScore } from './current-reducers';
 
 const initialState : TGameData|null = null
 

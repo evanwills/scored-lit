@@ -9,8 +9,9 @@ export interface IIndividualPlayer extends IPlayer {
   secondName: string,
 };
 
-export interface TTeam extends IPlayer {
+export interface ITeam extends IPlayer {
   id: string,
   name: string,
   members: Array<TPlayer>,
 };
+

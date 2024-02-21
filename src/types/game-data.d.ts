@@ -1,5 +1,5 @@
-import { IPlayer, TPlayer, TTeam } from "./players";
-import { TScoreCard } from "./score-card";
+import { IPlayer, TPlayer, TTeam } from './players';
+import { TScoreCard } from './score-card';
 
 export type TCustomGame = {
   /**
@@ -42,7 +42,7 @@ export type TCustomGame = {
    *
    * @property
    */
-  maxScore: number|null = null,
+  maxScore: number|null,
 
   /**
    * Minimum number of players who can play the game.
@@ -90,14 +90,67 @@ export type TGameLead = {
   player: IPlayer,
   call: number,
   suit: string,
-}
+};
 
+/**
+ * States for game data
+ *
+ * @readonly
+ * @enum {string}
+ */
 export enum EGameStates {
+  /**
+   * Current game is in type selection mode
+   *
+   * * Default state when a new TGameData object is created
+   * * If players list is empty, next state must be `ADD_PLAYERS`
+   * * Current game cannot move into `SET_TYPE` mode if it has been
+   *   in `PLAYING mode
+   *
+   * @mmeber {string}
+   */
   SET_TYPE,
+  /**
+   * Current game is in add player mode
+   *
+   * Can transition either to `PLAYING` mode or `SET_TYPE` mode.
+   *
+   * > __Note:__ Depending on the game, "players" may be individual
+   *             players or teans.
+   *
+   * > __Note also:__ If current game is an "indiviual player" type
+   *             game
+   *             *and*
+   *             the players list is not empty and current game moves
+   *             to `SET_TYPE` mode
+   *             *and*
+   *             the updated "type" is a teams type game, the
+   *             players list will be emptied.
+   *             The same applies if the inital game type is a
+   *             "teams" type game and the new type is an
+   *             "individual player" type game
+   *
+   * @mmeber {string}
+   */
   ADD_PLAYERS,
+  /**
+   * Current game is in playing/scoring mode
+   *
+   * * Can only transition from `ADD_PLAYERS` to `PLAYING` mode
+   * * Can only transition to `GAME_OVER`
+   *
+   * @member {string}
+   */
   PLAYING,
+  /**
+   * Game is over and scores cannot be added or updated
+   *
+   * * Can only transition from `PLAYING`
+   * * If `TGameData.forced` is `TRUE`, can transition back to
+   *   `PLAYING`
+   */
   GAME_OVER,
-}
+};
 
 /**
  * @type Data for a single game
