@@ -107,7 +107,7 @@ export enum EGameStates {
    * * Current game cannot move into `SET_TYPE` mode if it has been
    *   in `PLAYING mode
    *
-   * @mmeber {string}
+   * @member {string}
    */
   SET_TYPE,
   /**
@@ -130,7 +130,7 @@ export enum EGameStates {
    *             "teams" type game and the new type is an
    *             "individual player" type game
    *
-   * @mmeber {string}
+   * @member {string}
    */
   ADD_PLAYERS,
   /**
@@ -148,6 +148,8 @@ export enum EGameStates {
    * * Can only transition from `PLAYING`
    * * If `TGameData.forced` is `TRUE`, can transition back to
    *   `PLAYING`
+   *
+   * @member {string}
    */
   GAME_OVER,
 };

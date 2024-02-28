@@ -10,7 +10,7 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
   switch (action.type) {
     case currentGameActions.RESTART:
       return next({
-        type: currentGameActions.ADD_INNER,
+        type: currentGameActions.SET_NEW,
         payload: {
           ...current,
           state: EGameStates.PLAYING,
@@ -28,7 +28,7 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
 
     case currentGameActions.RESTART_CHANGE_PLAYERS:
       return next({
-        type: currentGameActions.ADD_INNER,
+        type: currentGameActions.SET_NEW,
         payload: {
           ...current,
           forced: false,
@@ -41,7 +41,7 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
 
     case currentGameActions.ADD_NEW_GAME:
       return next({
-        type: currentGameActions.ADD_INNER,
+        type: currentGameActions.SET_NEW,
         payload: {
           forced: false,
           scores: [],
