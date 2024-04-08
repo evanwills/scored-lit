@@ -1,4 +1,4 @@
-import { AnyAction, Reducer } from "redux";
+import { AnyAction, Reducer } from 'redux';
 import { IIndividualPlayer } from '../../types/players';
 
 export const addNewTeam : Reducer = (

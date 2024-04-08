@@ -21,3 +21,24 @@ export const sumScores = (scores: number[], index: number = 99999) : number => {
 
   return output;
 };
+
+
+export const setLocalValue = (key : string, value : any) => {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(key, value);
+  }
+};
+
+export const getLocalValue = (key : string, defaultVal : any) : any => {
+  if (typeof localStorage !== 'undefined') {
+    const output = localStorage.getItem(key);
+
+    if (output !== null) {
+      return output;
+    }
+
+    setLocalValue(key, defaultVal);
+  }
+
+  return defaultVal;
+};

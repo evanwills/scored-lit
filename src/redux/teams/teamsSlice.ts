@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ITeam } from '../../types/players';
 import { addNewTeam, deleteTeam, updateTeam } from './team-reducers';
+import { getLocalValue } from '../../utils/general.utils';
 
-export const initialState : Array<ITeam> = [];
+export const initialState : Array<ITeam> = getLocalValue('pastGameSlice', []);;
 
 export const playersSlice = createSlice({
   name: 'players',

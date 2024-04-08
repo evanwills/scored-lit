@@ -1,4 +1,4 @@
-import { html, LitElement, TemplateResult } from 'lit';
+import { css, CSSResult, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { sumScores } from '../utils/general.utils';
@@ -82,6 +82,21 @@ export class ScoreRow extends LitElement {
     }
   }
 
+  static styles: CSSResult = css`
+    td, th {
+      border-top: 0.05rem solid #fff;
+      border-left: 0.05rem solid #fff;
+    }
+
+    td:first-child, th:first-child {
+      border-left: none;
+    }
+
+    thead td, thead th {
+      border-top: none;;
+    }
+  `;
+
   connectedCallback() : void {
     super.connectedCallback()
 
@@ -92,8 +107,6 @@ export class ScoreRow extends LitElement {
       this._min = this.min;
     }
   }
-
-  /* ... */
 
   render() : TemplateResult {
 

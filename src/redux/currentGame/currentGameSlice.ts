@@ -1,8 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TGameData } from '../../types/game-data.d';
-import { endGameForced, endGameNatural, setGameType, setLead, setNewGame, setNewSameGame, setPlayer, setSameGameNewPlayers, setScore, updateLead, updateScore } from './current-reducers';
+import {
+  endGameForced,
+  endGameNatural,
+  setGameType, setLead, setNewGame, setNewSameGame, setPlayer, setSameGameNewPlayers, setScore, updateLead, updateScore } from './current-reducers';
+import { getLocalValue } from '../../utils/general.utils';
 
-const initialState : TGameData|null = null
+const initialState : TGameData|null = getLocalValue('currentGame', null);
 
 export const currentGameSlice = createSlice({
   name: 'currentGame',

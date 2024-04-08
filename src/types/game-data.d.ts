@@ -1,4 +1,4 @@
-import { IPlayer, TPlayer, TTeam } from './players';
+import { IPlayer, IIndividualPlayer, TTeam } from './players';
 import { TScoreCard } from './score-card';
 
 export type TCustomGame = {
@@ -259,7 +259,7 @@ export type TScoredStore = {
    * @property List of all players who have ever played a game
    *           scored by this app
    */
-  players: Array<TPlayer>,
+  players: Array<IIndividualPlayer>,
 
   /**
    * @property List of all teans who have ever played a game
