@@ -1,3 +1,7 @@
+// import { createAction } from '@reduxjs/toolkit';
+// import { IPlayer } from '../../types/players';
+// import { EGameStates, TGameData } from '../../types/game-data';
+
 export const currentGameActions = {
   /**
    * Create a totally new game with nothing set
@@ -69,6 +73,12 @@ export const currentGameActions = {
    */
   SET_LEAD: 'CURRENT_GAME_SET_LEAD',
   /**
+   * Set the current game mode
+   *
+   * @property SET_MODE
+   */
+  SET_MODE: 'CURRENT_GAME_SET_MODE',
+  /**
    * Replace current game data with new game data
    *
    * > __Note:__ This should only ever be done via middle ware.
@@ -101,3 +111,70 @@ export const currentGameActions = {
    */
   UPDATE_SCORE: 'CURRENT_GAME_UPDATE_SCORE',
 }
+
+// const newGameBasic = (id: string, start: string) => ({ payload: { id, start }});
+// const endGameBasic = (end: string) => ({ payload: end})
+
+// export const addGamePlayer = createAction(
+//   currentGameActions.ADD_PLAYER,
+//   (player: IPlayer) => ({
+//     payload: player
+//   }),
+// );
+
+// export const addNewGame = createAction(
+//   currentGameActions.ADD_NEW_GAME,
+//   newGameBasic,
+// );
+
+// export const endGame = createAction(currentGameActions.END_GAME);
+// export const forceEndGame = createAction(
+//   currentGameActions.FORCE_END,
+//   endGameBasic,
+// );
+// export const naturalEndGame = createAction(
+//   currentGameActions.NATURAL_END,
+//   endGameBasic,
+// );
+// export const restartGame = createAction(
+//   currentGameActions.RESTART,
+//   newGameBasic,
+// );
+// export const restartNewPlayers = createAction(
+//   currentGameActions.RESTART_CHANGE_PLAYERS,
+//   newGameBasic,
+// );
+// export const resumeGame = createAction(
+//   currentGameActions.RESUME_GAME,
+//   (game: TGameData) => ({ payload: game }),
+// );
+
+// export const setGameMode = createAction(
+//   currentGameActions.SET_MODE,
+//   (mode: EGameStates, start: string) => ({ payload: { mode, start }}),
+// );
+
+// export const setHandLead = createAction(
+//   currentGameActions.SET_LEAD,
+//   (id: string, call: number, suit: string) => ({ payload: { id, call, suit} }),
+// );
+
+// export const setPlayerScore = createAction(
+//   currentGameActions.SET_SCORE,
+//   (id: string, score: number) => ({ payload: { id, score} }),
+// );
+
+// export const setType = createAction(
+//   currentGameActions.SET_TYPE,
+//   (type: string) => ({ payload: type }),
+// );
+
+// export const updateHandLead = createAction(
+//   currentGameActions.UPDATE_LEAD,
+//   (call: number, suit: string) => ({ payload: { call, suit} }),
+// );
+
+// export const updatePlayerScore = createAction(
+//   currentGameActions.UPDATE_SCORE,
+//   (id: string, round: number, score: number) => ({ payload: { id, round, score} }),
+// );

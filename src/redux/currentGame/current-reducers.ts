@@ -1,6 +1,28 @@
-import { AnyAction, Reducer } from 'redux';
+import { AnyAction, Reducer,  } from 'redux';
 import { EGameStates, TGameData } from '../../types/game-data.d';
-import { sumScores } from '../../utils/general.utils';
+import {
+  // getLocalValue,
+  sumScores,
+} from '../../utils/general.utils';
+// import {
+//   addNewGame,
+//   addGamePlayer,
+//   forceEndGame,
+//   naturalEndGame,
+//   restartGame,
+//   restartNewPlayers,
+//   resumeGame,
+//   setGameMode,
+//   setHandLead,
+//   setPlayerScore,
+//   setType,
+//   updateHandLead,
+//   updatePlayerScore,
+// } from './current-actions';
+// import {
+//   // Builder,
+//   createReducer,
+// } from '@reduxjs/toolkit';
 
 const notSet = 'There is no game set yet.';
 
@@ -92,6 +114,7 @@ export const setNewSameGame : Reducer = (
     forced: false,
     id: action.payload.id,
     lead: null,
+    mode: EGameStates.PLAYING,
     scores: [],
     start: action.payload.start,
     winner: null,
@@ -221,6 +244,51 @@ export const setLead : Reducer = (
   };
 };
 
+export const setMode : Reducer = (
+  state : TGameData,
+  action: AnyAction
+) : TGameData => {
+  try {
+    notPlaying('setMode', 'CURRENT_GAME_SET_MODE', state);
+  } catch(error: any) {
+    throw Error(error);
+  }
+
+  return {
+    ...state,
+    mode: action.payload,
+  };
+};
+
+export const setMode : Reducer = (
+  state : TGameData,
+  action: AnyAction
+) : TGameData => {
+  try {
+    notPlaying('setMode', 'CURRENT_GAME_SET_MODE', state);
+  } catch(error: any) {
+    throw Error(error);
+  }
+
+  return {
+    ...state,
+    mode: action.payload,
+  };
+};
+
+export const resumeInterruptedGame : Reducer = (
+  state : TGameData,
+  action: AnyAction
+) : TGameData => {
+  try {
+    notPlaying('resumeInterruptedGame', 'CURRENT_GAME_RESUME', state);
+  } catch(error: any) {
+    throw Error(error);
+  }
+
+  return action.payload;
+};
+
 export const updateLead : Reducer = (
   state : TGameData,
   action: AnyAction
@@ -313,5 +381,25 @@ export const updateScore : Reducer = (
   };
 };
 
+// const initialState : TGameData|null = getLocalValue('currentGame', null);
+
+// export default createReducer(
+//   initialState,
+//   (builder : Builder) => {
+//     builder.addCase(addNewGame, setNewGame);
+//     builder.addCase(addGamePlayer, setPlayer);
+//     builder.addCase(forceEndGame, endGameForced);
+//     builder.addCase(naturalEndGame, endGameNatural);
+//     builder.addCase(restartGame, setNewSameGame);
+//     builder.addCase(restartNewPlayers, setSameGameNewPlayers);
+//     builder.addCase(resumeGame, resumeInterruptedGame);
+//     builder.addCase(setGameMode, setMode);
+//     builder.addCase(setHandLead, setLead);
+//     builder.addCase(setPlayerScore, setScore);
+//     builder.addCase(setType, setGameType);
+//     builder.addCase(updateHandLead, updateLead);
+//     builder.addCase(updatePlayerScore, updateScore);
+//   },
+// );
 
 
