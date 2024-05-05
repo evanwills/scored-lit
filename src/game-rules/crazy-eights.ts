@@ -21,6 +21,7 @@ export class CrazyEights implements IGameRules {
   // ----------------------------------------------------------------
   // START: public property declarations
 
+  readonly id : string = 'crazy-eights';
   readonly lowestWins: boolean = true;
   readonly name: string = 'Crazy Eights';
   readonly maxPlayers: number|null = 0;

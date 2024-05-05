@@ -260,22 +260,6 @@ export const setMode : Reducer = (
   };
 };
 
-export const setMode : Reducer = (
-  state : TGameData,
-  action: AnyAction
-) : TGameData => {
-  try {
-    notPlaying('setMode', 'CURRENT_GAME_SET_MODE', state);
-  } catch(error: any) {
-    throw Error(error);
-  }
-
-  return {
-    ...state,
-    mode: action.payload,
-  };
-};
-
 export const resumeInterruptedGame : Reducer = (
   state : TGameData,
   action: AnyAction

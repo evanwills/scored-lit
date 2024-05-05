@@ -2,8 +2,9 @@ import { LitElement, css, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { connect } from 'pwa-helpers';
 import { store } from './redux/store';
-import { EGameStates, TCustomGame, TGameData, TScoredStore } from './types/game-data';
-import { IIndividualPlayer, ITeam } from './types/players';
+import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';
+import { IGameRuleData } from './types/game-rules.d';
+import { IIndividualPlayer, ITeam } from './types/players.d';
 /**
  * An example element.
  *
@@ -16,7 +17,7 @@ export class ScoreCards extends connect(store)(LitElement) {
   currentGame : TGameData|null = null;
 
   @state()
-  customGames: Array<TCustomGame> = [];
+  customGames: Array<IGameRuleData> = [];
 
   @state()
   pastGames: Array<TGameData> = [];
@@ -48,6 +49,10 @@ export class ScoreCards extends connect(store)(LitElement) {
       : null;
   };
 
+  handleStart() {
+    console.log('start game');
+  };
+
   render() {
     return html`
       <div class="score-card">
@@ -56,7 +61,7 @@ export class ScoreCards extends connect(store)(LitElement) {
 
         <p>
           ${(this.currentGame === null) ? html`
-            <button @click=${{handleEvent: () => { console.log('start game') }, once: true}}>Start new game</button>
+            <button @click=${this.handleStart}>Start new game</button>
             ${(this.restarters > 0) ? html`<button>Resume interrupted game</button>` : ''}` : ''}
           ${(this.gameState === EGameStates.PLAYING) ? html`<button>End game</button>` : ''}
         </p>

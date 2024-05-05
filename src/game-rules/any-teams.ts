@@ -5,7 +5,7 @@ import { TScoreCard, TSimpleScore } from '../types/score-card';
 import { getHighLow, getPlayer, getPlayerError, rankPlayers } from './game-utils';
 
 
-export class CrazyEights implements IGameRules {
+export class AnyTeam implements IGameRules {
   // ================================================================
   // START: property declarations
 
@@ -26,6 +26,7 @@ export class CrazyEights implements IGameRules {
   // ----------------------------------------------------------------
   // START: public property declarations
 
+  readonly id: string = 'any-team'
   readonly lowestWins: boolean = false;
   readonly name: string = 'Any (teams)';
   readonly maxPlayers: number|null = null;

@@ -1,7 +1,7 @@
 import { AnyAction, Reducer } from '@reduxjs/toolkit';
 // import { pastGameActions } from './past-actions';
 import { TGameData } from '../../types/game-data.d';
-// import { TPastGameAction } from '../../types/custom-redux-types';
+// import { IPastGameAction } from '../../types/custom-redux-types';
 
 export const addNewPastGame : Reducer = (
   state : Array<TGameData>,

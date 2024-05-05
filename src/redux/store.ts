@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 // import { TScoredStore } from '../types/game-data.d';
 import currentGameReducer from './currentGame/currentGameSlice';
+import customGamesReducer from './customGames/customGamesSlice';
+import gameRulesReducer from './gameRules/gameRulesSlice';
 import pastGamesReducer from './pastGames/pastGamesSlice';
 import teamsReducer from './teams/teamsSlice';
 import playersReducer from './players/playersSlice';
@@ -19,6 +21,8 @@ import { pastGameMiddleware } from './pastGames/past-middleware';
 export const store = configureStore({
   reducer: {
     currentGame: currentGameReducer,
+    customGames: customGamesReducer,
+    gameTypes: gameRulesReducer,
     pastGames: pastGamesReducer,
     players: playersReducer,
     teams: teamsReducer,

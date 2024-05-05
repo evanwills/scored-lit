@@ -1,11 +1,11 @@
 import { IGameRules, TLead } from '../types/game-rules';
 import { TCall } from '../types/game-rules';
-import { TScoreCard, TSimpleScore } from '../types/score-card';
+import { IScoreEntryTrick, TScoreCard, TSimpleScore } from '../types/score-card';
 import { getHighLow, getPlayer, getPlayerError, rankPlayers } from './game-utils';
 
 
 /**
- * Get the true score from a 500 had based on number of tricks won
+ * Get the true score from a 500 hand based on number of tricks won
  *
  * @param score Number of tricks won
  * @param lead  Whether or not player won the call
@@ -13,32 +13,48 @@ import { getHighLow, getPlayer, getPlayerError, rankPlayers } from './game-utils
  *
  * @returns The true score for the player.
  */
-export const get500Score = (score: number, playerID: string, call: TLead) : number => {
+export const get500Score = (score: number, playerID: string, call: TLead) : IScoreEntryTrick => {
   if (call === null) {
     throw new Error(
       '500.getScore() expects third parameter call not to be null',
     );
   }
 
+  const output : IScoreEntryTrick = {
+    call: call.name,
+    score: 0,
+    success: null,
+    time: new Date().toISOString(),
+  }
+
   const isLead = (playerID === call.playerID);
 
   if (call.id === 'M' || call.id === 'OM') {
     if (isLead === false) {
-      return 0;
+      output.score = 0;
+      output.success = false;
+
+      return output;
     }
 
-    return (score > 0)
+    output.score = (score > 0)
+      ? call.score * -1
+      : call.score;
+    output.success === true;
+
+    return output;
+  }
+
+  if (isLead === false) {
+    output.score = score * 10;
+  } else {
+    output.success = (score >= call.tricks)
+    output.score = (!output.success)
       ? call.score * -1
       : call.score;
   }
 
-  if (isLead === false) {
-    return score * 10;
-  }
-
-  return (score >= call.tricks)
-    ? call.score * -1
-    : call.score;
+  return output;
 };
 
 /**
@@ -70,12 +86,12 @@ export class FiveHundred implements IGameRules {
   //  END:  private property declarations
   // ----------------------------------------------------------------
   // START: public property declarations
-
+  readonly id: string = 'five-hundred';
   readonly lowestWins: boolean = false;
-  readonly maxPlayers: number|null = 2;
-  readonly maxScore: number|null = 500;
+  readonly maxPlayers: number = 2;
+  readonly maxScore: number = 500;
   readonly minPlayers: number = 2;
-  readonly minScore: number|null = -500;
+  readonly minScore: number = -500;
   readonly name: string = '500';
   readonly callToWin: boolean = true;
   readonly possibleCalls: Array<TCall> = [
@@ -119,7 +135,6 @@ export class FiveHundred implements IGameRules {
   // START: method declarations
 
   constructor(players: Array<string>) {
-    this.gameOver = () => this._gameOver;
     this._teams = players.map((player) => ({
       id: player,
       scores: [],
@@ -249,7 +264,7 @@ export class FiveHundred implements IGameRules {
     }
   };
 
-  setScore (playerID: string, score: number) : number {
+  setScore (playerID: string, score: number) : IScoreEntryTrick {
     const tmp = getPlayer(this._teams, playerID);
     if (tmp === null) {
       throw new Error(getPlayerError(this.name, 'setScore', playerID));
@@ -292,7 +307,7 @@ export class FiveHundred implements IGameRules {
     );
   };
 
-  _updateRankAndScore (player: TScoreCard, newScores: Array<number>) : number {
+  _updateRankAndScore (player: TScoreCard, newScores: Array<number>) : IScoreEntryTrick {
     const _tmp = {
       ...player,
       scores: newScores,
