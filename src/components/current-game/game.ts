@@ -20,6 +20,7 @@ export class CurrentGame extends LitElement {
     forced: false,
     id: '',
     lead: null,
+    looser: null,
     mode: EGameStates.SET_TYPE,
     players: [],
     scores: [],

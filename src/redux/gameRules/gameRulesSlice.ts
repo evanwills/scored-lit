@@ -1,14 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getLocalValue } from '../../utils/general.utils';
+import { getLocalValue } from '../../utils/storage-utils';
 import { IGameRuleData, IGameRules } from '../../types/game-rules';
 import { FiveHundred } from '../../game-rules/500';
 import { AnyIndividual } from '../../game-rules/any-individual';
 import { AnyTeam } from '../../game-rules/any-teams';
 import { CrazyEights } from '../../game-rules/crazy-eights';
-import { gameFinder, gameUpdater } from '../game.utils';
+import { gameFinder, gameUpdater } from '../game-utils';
 
 
-const customGames : Array<IGameRuleData> = getLocalValue('customGame', []);
+const customGames : Array<IGameRuleData> = getLocalValue('customGame', [], 'object|null');
 
 const getRule = (preBuilt : IGameRules) : IGameRuleData => ({
   id: preBuilt.id,

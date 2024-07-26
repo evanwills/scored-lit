@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { TGameData } from '../../types/game-data.d';
 import { addNewPastGame, deletePastGame, updatePastGame } from './past-reducers';
-import { getLocalValue } from '../../utils/general.utils';
+import { getLocalValue } from '../../utils/storage-utils';
 
-export const initialState : Array<TGameData> = getLocalValue('pastGames', []);
+export const initialState : Array<TGameData> = getLocalValue('pastGames', [], 'object|null');
 
 export const pastGamesSlice = createSlice({
   name: 'pastGames',

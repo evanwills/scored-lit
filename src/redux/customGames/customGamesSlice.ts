@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getLocalValue } from '../../utils/general.utils';
+import { getLocalValue } from '../../utils/storage-utils';
 import { IGameRuleData } from '../../types/game-rules';
-import { gameFinder, gameUpdater } from '../game.utils';
+import { gameFinder, gameUpdater } from '../game-utils';
 
 
 
-export const initialState : Array<IGameRuleData> = getLocalValue('customGame', []);
+export const initialState : Array<IGameRuleData> = getLocalValue('customGame', [], 'object|null');
 
 export const customGamesSlice = createSlice({
   name: 'customGames',

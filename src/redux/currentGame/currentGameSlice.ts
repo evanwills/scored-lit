@@ -4,9 +4,9 @@ import {
   endGameForced,
   endGameNatural,
   setGameType, setLead, setNewGame, setNewSameGame, setPlayer, setSameGameNewPlayers, setScore, updateLead, updateScore } from './current-reducers';
-import { getLocalValue } from '../../utils/general.utils';
+import { getLocalValue } from '../../utils/storage-utils';
 
-const initialState : TGameData|null = getLocalValue('currentGame', null);
+const initialState : TGameData|null = getLocalValue('currentGame', null, 'object|null');
 
 export const currentGameSlice = createSlice({
   name: 'currentGame',

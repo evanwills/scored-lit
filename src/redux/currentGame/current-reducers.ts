@@ -3,7 +3,7 @@ import { EGameStates, TGameData } from '../../types/game-data.d';
 import {
   // getLocalValue,
   sumScores,
-} from '../../utils/general.utils';
+} from '../../utils/general-utils';
 // import {
 //   addNewGame,
 //   addGamePlayer,
@@ -88,10 +88,11 @@ export const setNewGame : Reducer = (
     forced: false,
     id: action.payload.id,
     lead: null,
+    looser: null,
+    mode: EGameStates.SET_TYPE,
     players: [],
     scores: [],
     start: action.payload.start,
-    mode: EGameStates.SET_TYPE,
     teams: false,
     type: '',
     winner: null,

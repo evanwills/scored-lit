@@ -16,7 +16,7 @@ export interface TLead extends TCall {
 }
 
 export type FHasWon = () => string;
-export type FUpdateScore = (playerID: string, score: number, round: number) => number;
+export type FUpdateScore = (playerID: string, score: number, round: number) => IScoreEntry;
 
 export type FGetScore = (playerID: string) => number;
 
@@ -131,7 +131,7 @@ export interface IGameRules extends IGameRuleData {
   getScore: FGetScore,
   getWinner: () => string,
   setLead: (playerID: string, call: string) => void,
-  setScore: (playerID: string, score: number) => number,
+  setScore: (playerID: string, score: number) => IScoreEntry,
   updateScore: FUpdateScore,
   readonly id: string,
   readonly lowestWins: boolean,

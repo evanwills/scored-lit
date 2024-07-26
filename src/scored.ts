@@ -5,6 +5,10 @@ import { store } from './redux/store';
 import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';
 import { IGameRuleData } from './types/game-rules.d';
 import { IIndividualPlayer, ITeam } from './types/players.d';
+import { getEpre } from './utils/general-utils';
+
+const ePre = getEpre('scored');
+
 /**
  * An example element.
  *
@@ -54,15 +58,26 @@ export class ScoreCards extends connect(store)(LitElement) {
   };
 
   render() {
+    console.group(ePre('render'));
+    console.log('this.currentGame:', this.currentGame);
+    console.log('this.restarters:', this.restarters);
+    console.log('this.gameState:', this.gameState);
+    console.groupEnd();
     return html`
       <div class="score-card">
         <h1>Scored</h1>
         <p>Keep score for your favourite games</p>
 
         <p>
-          ${(this.currentGame === null) ? html`
-            <button @click=${this.handleStart}>Start new game</button>
-            ${(this.restarters > 0) ? html`<button>Resume interrupted game</button>` : ''}` : ''}
+          ${(this.currentGame === null)
+            ? html`
+              <button type="button" @click=${this.handleStart}>Start new game</button>
+              ${(this.restarters > 0)
+                ? html`<button>Resume interrupted game</button>`
+                : ''
+              }`
+            : ''
+          }
           ${(this.gameState === EGameStates.PLAYING) ? html`<button>End game</button>` : ''}
         </p>
       </div>

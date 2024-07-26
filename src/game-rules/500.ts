@@ -282,7 +282,7 @@ export class FiveHundred implements IGameRules {
     );
   };
 
-  updateScore (playerID: string, score: number, round: number) : number {
+  updateScore (playerID: string, score: number, round: number) : IScoreEntryTrick {
     const tmp = getPlayer(this._teams, playerID);
     const _r = round - 1;
     if (tmp === null) {
