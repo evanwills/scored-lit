@@ -8,7 +8,10 @@ import teamsReducer from './teams/teamsSlice';
 import playersReducer from './players/playersSlice';
 import { currentGameMiddleware } from './currentGame/current-middleware';
 import { pastGameMiddleware } from './pastGames/past-middleware';
+import { logger } from './redux-utils';
+// import { persistStore, persistReducer } from 'redux-persist'
 // import { TScoredStore } from '../types/game-data';
+// import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 
 // const defaultStore : TScoredStore = {
 //   currentGame: null,
@@ -17,6 +20,18 @@ import { pastGameMiddleware } from './pastGames/past-middleware';
 //   players: [],
 //   teams: [],
 // };
+
+/**
+ * Redux Persist
+ *
+ * https://www.npmjs.com/package/redux-persist
+ */
+// const persistConfig = {
+//   key: 'root',
+//   storage,
+// };
+// https://www.npmjs.com/package/redux-persist
+// const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
   reducer: {
@@ -30,10 +45,11 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     currentGameMiddleware,
     pastGameMiddleware,
+    logger,
   ),
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<typeof store.getState>
+export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch;

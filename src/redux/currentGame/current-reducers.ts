@@ -1,28 +1,29 @@
 import { AnyAction, Reducer,  } from 'redux';
 import { EGameStates, TGameData } from '../../types/game-data.d';
 import {
-  // getLocalValue,
   sumScores,
 } from '../../utils/general-utils';
-// import {
-//   addNewGame,
-//   addGamePlayer,
-//   forceEndGame,
-//   naturalEndGame,
-//   restartGame,
-//   restartNewPlayers,
-//   resumeGame,
-//   setGameMode,
-//   setHandLead,
-//   setPlayerScore,
-//   setType,
-//   updateHandLead,
-//   updatePlayerScore,
-// } from './current-actions';
-// import {
-//   // Builder,
-//   createReducer,
-// } from '@reduxjs/toolkit';
+import { getLocalValue } from '../../utils/storage-utils';
+import {
+  addNewGame,
+  addGamePlayer,
+  forceEndGame,
+  naturalEndGame,
+  restartGame,
+  restartNewPlayers,
+  resumeSelectedGame,
+  setGameMode,
+  setHandLead,
+  setPlayerScore,
+  setType,
+  updateHandLead,
+  updatePlayerScore,
+  selectGameToResume,
+} from './current-actions';
+import {
+  // builder,
+  createReducer,
+} from '@reduxjs/toolkit';
 
 const notSet = 'There is no game set yet.';
 
@@ -366,25 +367,26 @@ export const updateScore : Reducer = (
   };
 };
 
-// const initialState : TGameData|null = getLocalValue('currentGame', null);
+const initialState : TGameData|null = getLocalValue('currentGame', null, 'object|null');
 
-// export default createReducer(
-//   initialState,
-//   (builder : Builder) => {
-//     builder.addCase(addNewGame, setNewGame);
-//     builder.addCase(addGamePlayer, setPlayer);
-//     builder.addCase(forceEndGame, endGameForced);
-//     builder.addCase(naturalEndGame, endGameNatural);
-//     builder.addCase(restartGame, setNewSameGame);
-//     builder.addCase(restartNewPlayers, setSameGameNewPlayers);
-//     builder.addCase(resumeGame, resumeInterruptedGame);
-//     builder.addCase(setGameMode, setMode);
-//     builder.addCase(setHandLead, setLead);
-//     builder.addCase(setPlayerScore, setScore);
-//     builder.addCase(setType, setGameType);
-//     builder.addCase(updateHandLead, updateLead);
-//     builder.addCase(updatePlayerScore, updateScore);
-//   },
-// );
+export default createReducer(
+  initialState,
+  (builder) => {
+    builder.addCase(addNewGame, setNewGame);
+    builder.addCase(addGamePlayer, setPlayer);
+    builder.addCase(forceEndGame, endGameForced);
+    builder.addCase(naturalEndGame, endGameNatural);
+    builder.addCase(restartGame, setNewSameGame);
+    builder.addCase(restartNewPlayers, setSameGameNewPlayers);
+    builder.addCase(resumeSelectedGame, resumeInterruptedGame);
+    builder.addCase(selectGameToResume, (state, _action) => state);
+    builder.addCase(setGameMode, setMode);
+    builder.addCase(setHandLead, setLead);
+    builder.addCase(setPlayerScore, setScore);
+    builder.addCase(setType, setGameType);
+    builder.addCase(updateHandLead, updateLead);
+    builder.addCase(updatePlayerScore, updateScore);
+  },
+);
 
 

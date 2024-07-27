@@ -203,3 +203,9 @@ export type TWinnerLooser = {
     score: number,
   },
 };
+
+export type TActionPayloadNewGame = { id: string, start: string };
+export type TActionPayloadGameMode = { mode: EGameStates, start: string };
+export type TActionPayloadGameLead = { id: string, call: number, suit: string };
+export type TActionPayloadGameSetScore = { id: string, score: number };
+export type TActionPayloadGameUpdateScore = {id: string, round: number, score: number };

@@ -5,9 +5,10 @@ import { store } from './redux/store';
 import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';
 import { IGameRuleData } from './types/game-rules.d';
 import { IIndividualPlayer, ITeam } from './types/players.d';
-import { getEpre } from './utils/general-utils';
+// import { getEpre } from './utils/general-utils';
+import { addNewGame, forceEndGame, selectGameToResume } from './redux/currentGame/current-actions';
 
-const ePre = getEpre('scored');
+// const ePre = getEpre('scored');
 
 /**
  * An example element.
@@ -53,16 +54,26 @@ export class ScoreCards extends connect(store)(LitElement) {
       : null;
   };
 
-  handleStart() {
-    console.log('start game');
+  handleClick(event : Event) {
+    if (typeof event.target !== 'undefined' && event.target !== null) {
+      switch ((event.target as HTMLButtonElement).value) {
+        case 'start':
+          // addNewGame({ id: 'new', start: new Date().toISOString() });
+          store.dispatch(
+            addNewGame({ id: 'new', start: new Date().toISOString() }),
+          );
+          break;
+
+        case 'end':
+          store.dispatch(forceEndGame('force'));
+          break;
+        case 'resume':
+          store.dispatch(selectGameToResume(null));
+      }
+    }
   };
 
   render() {
-    console.group(ePre('render'));
-    console.log('this.currentGame:', this.currentGame);
-    console.log('this.restarters:', this.restarters);
-    console.log('this.gameState:', this.gameState);
-    console.groupEnd();
     return html`
       <div class="score-card">
         <h1>Scored</h1>
@@ -71,14 +82,14 @@ export class ScoreCards extends connect(store)(LitElement) {
         <p>
           ${(this.currentGame === null)
             ? html`
-              <button type="button" @click=${this.handleStart}>Start new game</button>
+              <button type="button" value="start" @click=${this.handleClick}>Start new game</button>
               ${(this.restarters > 0)
-                ? html`<button>Resume interrupted game</button>`
+                ? html`<button type="button" value="resume" @click=${this.handleClick}>Resume interrupted game</button>`
                 : ''
               }`
             : ''
           }
-          ${(this.gameState === EGameStates.PLAYING) ? html`<button>End game</button>` : ''}
+          ${(this.gameState === EGameStates.PLAYING) ? html`<button type="button" value="end" @click=${this.handleClick}>End game</button>` : ''}
         </p>
       </div>
     `
