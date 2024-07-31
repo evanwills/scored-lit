@@ -1,4 +1,7 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  // PayloadAction,
+} from '@reduxjs/toolkit';
 // import { TScoredStore } from '../types/game-data.d';
 import currentGameReducer from './currentGame/currentGameSlice';
 import customGamesReducer from './customGames/customGamesSlice';
@@ -53,3 +56,15 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
+
+
+
+document.addEventListener( // @ts-ignore
+  'redux-dispatch', (event: Event) => {
+    if (isCustomEvent(event)) {
+      store.dispatch(event.detail);
+    }
+    console.groupEnd();
+  },
+);
+// document.addEventListener('dispatch', store.dispatch);

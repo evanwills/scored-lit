@@ -7,6 +7,7 @@ import { IGameRuleData } from './types/game-rules.d';
 import { IIndividualPlayer, ITeam } from './types/players.d';
 // import { getEpre } from './utils/general-utils';
 import { addNewGame, forceEndGame, selectGameToResume } from './redux/currentGame/current-actions';
+import { sendToStore } from './redux/redux-utils';
 
 // const ePre = getEpre('scored');
 
@@ -59,16 +60,22 @@ export class ScoreCards extends connect(store)(LitElement) {
       switch ((event.target as HTMLButtonElement).value) {
         case 'start':
           // addNewGame({ id: 'new', start: new Date().toISOString() });
-          store.dispatch(
+          // store.dispatch(
+          //   addNewGame({ id: 'new', start: new Date().toISOString() }),
+          // );
+          sendToStore(
+            this,
             addNewGame({ id: 'new', start: new Date().toISOString() }),
           );
           break;
 
         case 'end':
-          store.dispatch(forceEndGame('force'));
+          // store.dispatch(forceEndGame('force'));
+          sendToStore(this, forceEndGame('force'));
           break;
         case 'resume':
-          store.dispatch(selectGameToResume(null));
+          // store.dispatch(selectGameToResume(null));
+          sendToStore(this, selectGameToResume(null));
       }
     }
   };

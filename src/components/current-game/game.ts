@@ -4,6 +4,7 @@ import { TGameType, TGameTypes } from "../../types/custom-redux-types";
 import { EGameStates, TGameData } from "../../types/game-data";
 import './select-type';
 import { IIndividualPlayer, ITeam } from "../../types/players";
+import { inputHasValue } from "../../type-guards";
 
 
 @customElement('current-game')
@@ -45,25 +46,27 @@ export class CurrentGame extends LitElement {
   nextGame() {
     return html`
       <p class="play-again play-again--after">
-        <button @playagain=${this.dispatch}>PLay again</button>
-        <button @playagaindiff=${this.dispatch}>PLay again with different players</button>
-        <button @playdiff=${this.dispatch}>PLay a different game</button>
-        <button @resume=${this.dispatch}>Resume an interrupted game</button>
+        <button type="button" value="playagain" @click=${this.dispatch}>PLay again</button>
+        <button type="button" value="playagaindiff" @click=${this.dispatch}>PLay again with different players</button>
+        <button type="button" value="playdiff" @click=${this.dispatch}>PLay a different game</button>
+        <button type="button" value="resume" @click=${this.dispatch}>Resume an interrupted game</button>
       </p>`;
   };
 
-  dispatch(event: CustomEvent) {
-    switch (event.type) {
-      case 'setgametype':
-        if (this.data.mode !== EGameStates.SET_TYPE) {
-          throw new Error(`Cannot set game type when game is in "${this.data.mode}"`)
-        }
+  dispatch(event: InputEvent) {
+    if (event.target !== null && inputHasValue(event.target)) {
+      switch (event.target.value) {
+        case 'setgametype':
+          if (this.data.mode !== EGameStates.SET_TYPE) {
+            throw new Error(`Cannot set game type when game is in "${this.data.mode}"`)
+          }
 
-        // dispatch redux action
-        break;
+          // dispatch redux action
+          break;
 
-      default:
-        throw new Error(`Unknown event: "${event.type}". Value: ${event.detail.toString()}`);
+        default:
+          throw new Error(`Unknown event: "${event.type}". Value: ${event.detail.toString()}`);
+      }
     }
   };
 
@@ -71,8 +74,8 @@ export class CurrentGame extends LitElement {
     if (this.data === null) {
       return html`
         <p class="play-again play-again--before">
-          <button @settype=${this.dispatch}>Choose a game</button>
-          <button @resume=${this.dispatch}>Resume an interrupted game</button>
+          <button type="button" value="settype" @click=${this.dispatch}>Choose a game</button>
+          <button type="button" value="resume" @click=${this.dispatch}>Resume an interrupted game</button>
         </p>`;
     }
 

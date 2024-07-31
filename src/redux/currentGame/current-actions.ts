@@ -132,87 +132,38 @@ export const currentGameActions = {
  * @property ADD_NEW_GAME
  */
 export const addNewGame = createAction<TActionPayloadNewGame, 'CURRENT_GAME_ADD_NEW'>('CURRENT_GAME_ADD_NEW');
-// export const addNewGame = createAction(
-//   'CURRENT_GAME_ADD_NEW',
-//   newGameBasic,
-// );
 
 export const addGamePlayer = createAction<IPlayer, 'CURRENT_GAME_ADD_PLAYER'>( 'CURRENT_GAME_ADD_PLAYER');
-// export const addGamePlayer = createAction(
-//   'CURRENT_GAME_ADD_PLAYER',
-//   (player: IPlayer) => ({ payload: player}),
-// );
 
 export const endGame = createAction<string, 'CURRENT_GAME_END'>('CURRENT_GAME_END');
-// export const endGame = createAction(
-//   'CURRENT_GAME_END',
-//   endGameBasic,
-// );
+
 export const forceEndGame = createAction<string, 'CURRENT_GAME_FORCE_END'>('CURRENT_GAME_FORCE_END');
-// export const forceEndGame = createAction(
-//   'CURRENT_GAME_FORCE_END',
-//   endGameBasic,
-// );
+
 export const naturalEndGame = createAction<string, 'CURRENT_GAME_NATURAL_END'>('CURRENT_GAME_NATURAL_END');
-// export const naturalEndGame = createAction(
-//   'CURRENT_GAME_NATURAL_END',
-//   endGameBasic,
-// );
+
 export const restartGame = createAction<TActionPayloadNewGame, 'CURRENT_GAME_RESTART_SAME'>('CURRENT_GAME_RESTART_SAME');
-// export const restartGame = createAction(
-//   'CURRENT_GAME_RESTART_SAME',
-//   newGameBasic,
-// );
+
 export const restartNewPlayers = createAction<TActionPayloadNewGame, 'CURRENT_GAME_START_SAME_NEW_PLAYERS'>('CURRENT_GAME_START_SAME_NEW_PLAYERS');
-// export const restartNewPlayers = createAction(
-//   'CURRENT_GAME_START_SAME_NEW_PLAYERS',
-//   newGameBasic,
-// );
+
 export const resumeSelectedGame = createAction<TGameData, 'CURRENT_GAME_RESUME'>('CURRENT_GAME_RESUME');
-//   export const resumeSelectedGame = createAction(
-//   'CURRENT_GAME_RESUME',
-//   (game: TGameData) => ({ payload: game }),
-// );
+
 export const selectGameToResume = createAction<null, 'CURRENT_GAME_SELECT_RESUME'>('CURRENT_GAME_SELECT_RESUME');
 
 export const setGameMode = createAction<TActionPayloadGameMode, 'CURRENT_GAME_SET_MODE'>('CURRENT_GAME_SET_MODE');
-// export const setGameMode = createAction(
-//   'CURRENT_GAME_SET_MODE',
-//   (mode: EGameStates, start: string) => ({ payload: { mode, start }}),
-// );
 
 export const setHandLead = createAction<TActionPayloadGameLead, 'CURRENT_GAME_SET_LEAD'>('CURRENT_GAME_SET_LEAD');
-// export const setHandLead = createAction(
-//   'CURRENT_GAME_SET_LEAD',
-//   (id: string, call: number, suit: string) => ({ payload: { id, call, suit} }),
-// );
 
 export const setNewGame = createAction<TGameData, 'CURRENT_GAME_SET_NEW_GAME'>('CURRENT_GAME_SET_NEW_GAME');
-// export const setNewGame = createAction(
-//   'CURRENT_GAME_SET_NEW_GAME',
-//   (gameData: TGameData) => ({ payload: gameData }),
-// );
 
 export const setPlayerScore = createAction<TActionPayloadGameSetScore, 'CURRENT_GAME_SET_SCORE'>('CURRENT_GAME_SET_SCORE');
-// export const setPlayerScore = createAction(
-//   'CURRENT_GAME_SET_SCORE',
-//   (id: string, score: number) => ({ payload: { id, score} }),
-// );
 
-export const setType = createAction<string, 'CURRENT_GAME_SET_TYPE'>('CURRENT_GAME_SET_TYPE');
-// export const setType = createAction(
-//   'CURRENT_GAME_SET_TYPE',
-//   (type: string) => ({ payload: type }),
-// );
+/**
+ * Set the type of game being played
+ *
+ * @property SET_TYPE
+ */
+export const setGameType = createAction<string, 'CURRENT_GAME_SET_TYPE'>('CURRENT_GAME_SET_TYPE');
 
 export const updateHandLead = createAction<TActionPayloadGameLead, 'CURRENT_GAME_UPDATE_LEAD'>('CURRENT_GAME_UPDATE_LEAD');
-// export const updateHandLead = createAction(
-//   'CURRENT_GAME_UPDATE_LEAD',
-//   (call: number, suit: string) => ({ payload: { call, suit} }),
-// );
 
 export const updatePlayerScore = createAction<TActionPayloadGameUpdateScore, 'CURRENT_GAME_UPDATE_SCORE'>('CURRENT_GAME_UPDATE_SCORE');
-// export const updatePlayerScore = createAction(
-//   'CURRENT_GAME_UPDATE_SCORE',
-//   (id: string, round: number, score: number) => ({ payload: { id, round, score} }),
-// );
