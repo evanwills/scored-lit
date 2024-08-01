@@ -1,12 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
 import { IPlayer } from '../../types/players';
 import {
+  EGameStates,
   // EGameStates,
   TActionPayloadGameLead,
-  TActionPayloadGameMode,
+  // TActionPayloadGameMode,
   TActionPayloadGameSetScore,
   TActionPayloadGameUpdateScore,
-  TActionPayloadNewGame,
+  // TActionPayloadNewGame,
   TGameData,
 } from '../../types/game-data';
 
@@ -131,7 +132,7 @@ export const currentGameActions = {
  *
  * @property ADD_NEW_GAME
  */
-export const addNewGame = createAction<TActionPayloadNewGame, 'CURRENT_GAME_ADD_NEW'>('CURRENT_GAME_ADD_NEW');
+export const addNewGame = createAction<string, 'CURRENT_GAME_ADD_NEW'>('CURRENT_GAME_ADD_NEW');
 
 export const addGamePlayer = createAction<IPlayer, 'CURRENT_GAME_ADD_PLAYER'>( 'CURRENT_GAME_ADD_PLAYER');
 
@@ -141,15 +142,15 @@ export const forceEndGame = createAction<string, 'CURRENT_GAME_FORCE_END'>('CURR
 
 export const naturalEndGame = createAction<string, 'CURRENT_GAME_NATURAL_END'>('CURRENT_GAME_NATURAL_END');
 
-export const restartGame = createAction<TActionPayloadNewGame, 'CURRENT_GAME_RESTART_SAME'>('CURRENT_GAME_RESTART_SAME');
+export const restartGame = createAction<null, 'CURRENT_GAME_RESTART_SAME'>('CURRENT_GAME_RESTART_SAME');
 
-export const restartNewPlayers = createAction<TActionPayloadNewGame, 'CURRENT_GAME_START_SAME_NEW_PLAYERS'>('CURRENT_GAME_START_SAME_NEW_PLAYERS');
+export const restartNewPlayers = createAction<null, 'CURRENT_GAME_START_SAME_NEW_PLAYERS'>('CURRENT_GAME_START_SAME_NEW_PLAYERS');
 
 export const resumeSelectedGame = createAction<TGameData, 'CURRENT_GAME_RESUME'>('CURRENT_GAME_RESUME');
 
 export const selectGameToResume = createAction<null, 'CURRENT_GAME_SELECT_RESUME'>('CURRENT_GAME_SELECT_RESUME');
 
-export const setGameMode = createAction<TActionPayloadGameMode, 'CURRENT_GAME_SET_MODE'>('CURRENT_GAME_SET_MODE');
+export const setGameMode = createAction<EGameStates, 'CURRENT_GAME_SET_MODE'>('CURRENT_GAME_SET_MODE');
 
 export const setHandLead = createAction<TActionPayloadGameLead, 'CURRENT_GAME_SET_LEAD'>('CURRENT_GAME_SET_LEAD');
 

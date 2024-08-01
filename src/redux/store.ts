@@ -63,11 +63,14 @@ export type AppDispatch = typeof store.dispatch;
 
 
 document.addEventListener( // @ts-ignore
-  'redux-dispatch', (event: Event) => {
+  'reduxaction', (event: Event) => {
+    // console.group('store.reduxaction()');
+    // console.log('event:', event);
+
     if (isCustomEvent(event)) {
       store.dispatch(event.detail);
     }
-    console.groupEnd();
+    // console.groupEnd();
   },
 );
 // document.addEventListener('dispatch', store.dispatch);

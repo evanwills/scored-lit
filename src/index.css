@@ -28,8 +28,11 @@ body {
   display: flex;
   place-items: center;
   justify-content: center;
-  min-width: 24rem;
+  /* min-width: 24rem; */
   min-height: 100vh;
+  width: calc(100% - 2rem);
+  max-width: 48rem;
+  margin: 0 auto;
 }
 
 @media (prefers-color-scheme: light) {

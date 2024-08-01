@@ -1,8 +1,12 @@
 
-export const isCustomEvent = (evt: Event): evt is CustomEvent => {
-  return (evt as CustomEvent).detail !== undefined;
+export const isCustomEvent = (target: Event): target is CustomEvent => {
+  return (target as CustomEvent).detail !== undefined;
 };
 
-export const inputHasValue = (evt: EventTarget): evt is HTMLInputElement => {
-  return (evt as HTMLInputElement).value !== undefined;
+export const inputHasValue = (target: EventTarget): target is HTMLInputElement => {
+  return (target as HTMLInputElement).value !== undefined;
+};
+
+export const linkHasHref = (target: EventTarget): target is HTMLAnchorElement => {
+  return (target as HTMLAnchorElement).href !== undefined;
 };

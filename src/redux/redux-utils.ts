@@ -19,10 +19,15 @@ export const logger : Middleware = store => next => action => {
  *                Redux store
  */
 export const sendToStore = (element: HTMLElement, payload : any) : void => {
+  // console.group('sendToStore()');
+  // console.log('element:', element);
+  // console.log('payload:', payload);
+  // console.groupEnd();
   element.dispatchEvent(new CustomEvent(
-    'redux-dispatch',
+    'reduxaction',
     {
-      bubbles: true, // only bubbles and cancelable
+      bubbles: true,    // only bubbles and cancelable
+      composed: true, // work in the Event constructor
       cancelable: true, // work in the Event constructor
 
       detail: payload,

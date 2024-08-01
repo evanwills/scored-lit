@@ -1,12 +1,16 @@
 import { html, LitElement } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { TGameType, TGameTypes } from '../../types/custom-redux-types';
 import { EGameStates, TGameData } from '../../types/game-data.d'
 import './select-type';
 import { IIndividualPlayer, ITeam } from '../../types/players';
 import { inputHasValue } from '../../type-guards';
+import { sendToStore } from '../../redux/redux-utils';
+import { addNewGame, restartGame, restartNewPlayers, setGameMode } from '../../redux/currentGame/current-actions';
+import { EAppStates, setAppState } from '../../redux/app-state';
+import { getEpre } from '../../utils/general-utils';
 
-
+const ePre = getEpre('current-game');
 @customElement('current-game')
 export class CurrentGame extends LitElement {
   @property({ type: Array })
@@ -40,60 +44,128 @@ export class CurrentGame extends LitElement {
   @property({ type: Array })
   pastGames: Array<TGameData> = [];
 
+  @state()
+  canResume: boolean = false;
+
+  @state()
+  resumeSet: boolean = false;
+
+  @state()
+  showGameTypeSelect: boolean = false;
+
   // handleTypeSelect(event: InputEvent) {
   // };
 
   nextGame() {
     return html`
       <p class="play-again play-again--after">
-        <button type="button" value="playagain" @click=${this.dispatch}>PLay again</button>
-        <button type="button" value="playagaindiff" @click=${this.dispatch}>PLay again with different players</button>
-        <button type="button" value="playdiff" @click=${this.dispatch}>PLay a different game</button>
-        <button type="button" value="resume" @click=${this.dispatch}>Resume an interrupted game</button>
+        <button type="button" value="playagain" @click=${this.dispatch}>
+          Play again
+        </button>
+        <button type="button" value="playagaindiff" @click=${this.dispatch}>
+          Play again with different players
+        </button>
+        <button type="button" value="playdiff" @click=${this.dispatch}>
+          Play a different game
+        </button>
+        ${(this.canResume === true)
+          ? html`
+            <button type="button" value="resume" @click=${this.dispatch}>
+              Resume an interrupted game
+            </button>`
+          : ''
+        }
       </p>`;
   };
 
   dispatch(event: InputEvent) {
     if (event.target !== null && inputHasValue(event.target)) {
-      switch (event.target.value) {
-        case 'setgametype':
-          if (this.data.mode !== EGameStates.SET_TYPE) {
-            throw new Error(`Cannot set game type when game is in "${this.data.mode}"`)
-          }
 
-          // dispatch redux action
+      switch (event.target.value) {
+        case 'playagain':
+          // @TODO Do some sanity checking to make sure it's OK to
+          //       start a new game
+          sendToStore(this, restartGame(null));
+          break;
+
+          case 'playagaindiff':
+            // @TODO Do some sanity checking to make sure it's OK to
+            //       start a new game
+            sendToStore(this, restartNewPlayers(null));
+            break;
+
+          case 'playdiff':
+            // @TODO Do some sanity checking to make sure it's OK to
+            //       start a new game
+            sendToStore(this, restartNewPlayers(null));
+            break;
+
+          case 'resume':
+            // @TODO Do some sanity checking to make sure it's OK to
+            //       start a new game
+            sendToStore(
+              this,
+              setAppState(EAppStates.interuptedGames),
+            );
+            break;
+
+        case 'settype':
+          this.showGameTypeSelect = true;
           break;
 
         default:
           throw new Error(`Unknown event: "${event.type}". Value: ${event.detail.toString()}`);
       }
     }
+    console.groupEnd();
   };
 
+  handleTypeConfirmed(event: CustomEvent) {
+    this.showGameTypeSelect = false;
+    sendToStore(this, addNewGame(event.detail))
+  }
+
+  renderGameTypeSelect() {
+    const id = (this.data !== null)
+      ?  this.data.type
+      : '';
+
+    const types = this.types.map((rule) : TGameType => ({
+      id: rule.id,
+      name: rule.name,
+      description: '',
+    }));
+
+    return html`
+      <select-game-type
+        .last-type="${id}"
+        .types="${types}"
+        @typeconfirmed=${this.handleTypeConfirmed}></select-game-type>`;
+  }
+
   render() {
+    if (this.resumeSet === false) {
+      this.canResume = this.pastGames.find((past : TGameData) => (past.forced === true))
+        ? true
+        : false;
+      this.resumeSet = true;
+    }
     if (this.data === null) {
       return html`
         <p class="play-again play-again--before">
-          <button type="button" value="settype" @click=${this.dispatch}>Choose a game</button>
-          <button type="button" value="resume" @click=${this.dispatch}>Resume an interrupted game</button>
+          ${(this.showGameTypeSelect)
+            ? this.renderGameTypeSelect()
+            : html`<button type="button" value="settype" @click=${this.dispatch}>Choose a game</button>`
+          }
+
+          ${(this.canResume === true)
+            ? html`
+              <button type="button" value="resume" @click=${this.dispatch}>
+                Resume an interrupted game
+              </button>`
+            : ''
+          }
         </p>`;
-    }
-
-    if (this.data.mode === EGameStates.SET_TYPE) {
-      const id = (this.data !== null)
-        ?  this.data.type
-        : '';
-      const types = this.rules.map((rule) : TGameType => ({
-        id: rule.id,
-        name: rule.name,
-        description: '',
-      }));
-
-      return html`
-        <select-game-type
-          .last-type="${id}"
-          @setgametype=${this.dispatch}
-          .types="${types}"></select-game-type>`;
     }
 
     if (this.data.mode === EGameStates.ADD_PLAYERS) {

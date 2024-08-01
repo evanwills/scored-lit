@@ -6,12 +6,20 @@ import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';
 import { IGameRuleData } from './types/game-rules.d';
 import { IIndividualPlayer, ITeam } from './types/players.d';
 import { getEpre } from './utils/general-utils';
-import { addNewGame, forceEndGame, selectGameToResume } from './redux/currentGame/current-actions';
+import { selectGameToResume } from './redux/currentGame/current-actions';
 import { sendToStore } from './redux/redux-utils';
-import { EAppStates } from './redux/app-state';
+import { EAppStates, setAppState } from './redux/app-state';
 import './components/current-game/game';
+import { TAppRoute } from './types/general';
+import { inputHasValue, linkHasHref } from './type-guards';
 
 const ePre = getEpre('scored');
+const routes : TAppRoute[] = [
+  { anchor: 'game', label: 'Keep score', icon: '' },
+  { anchor: 'players', label: 'Manage players', icon: '' },
+  { anchor: 'teams', label: 'Manage teams', icon: '' },
+  { anchor: 'pastGames', label: 'View past games', icon: '' },
+]
 
 /**
  * An example element.
@@ -42,15 +50,16 @@ export class ScoreCards extends connect(store)(LitElement) {
   @state()
   gameState: EGameStates|null = null;
 
-  connectedCallback() {
-    console.group(ePre('connectedCallback'));
-    super.connectedCallback()
+  private navDialog : HTMLDialogElement|null = null;
 
-    console.log('store:', store);
-    console.log('store.getState():', store.getState());
-    console.groupEnd();
+  // connectedCallback() {
+  //   console.group(ePre('connectedCallback'));
+  //   super.connectedCallback()
 
-  }
+  //   console.log('store:', store);
+  //   console.log('store.getState():', store.getState());
+  //   console.groupEnd();
+  // }
 
   stateChanged(state : TScoredStore) {
     this.currentGame = state.currentGame;
@@ -67,30 +76,67 @@ export class ScoreCards extends connect(store)(LitElement) {
       : null;
   };
 
+  handleLinkClick(event: Event) {
+    if (this.navDialog !== null
+      && typeof event.target !== 'undefined'
+      && event.target !== null
+      && linkHasHref(event.target)
+    ) {
+      const anchor = event.target.href.replace(/^.*?#([a-z]+).*$/i, '$1');
+
+      sendToStore(this, setAppState(anchor));
+    }
+  }
+
+  toggleNav(event: InputEvent) {
+    if (this.navDialog === null) {
+      if (this.shadowRoot !== null) {
+        const tmp = this.shadowRoot.querySelector('#nav-menu');
+        if (typeof tmp !== 'undefined') {
+          this.navDialog = tmp as HTMLDialogElement;
+        }
+      }
+    }
+
+    if (this.navDialog !== null
+      && typeof event.target !== 'undefined'
+      && event.target !== null
+      && inputHasValue(event.target)
+    ) {
+      if (event.target.value === 'open' && this.navDialog.open === false) {
+        this.navDialog.showModal();
+      } else if (event.target.value === 'close' && this.navDialog.open === true) {
+        this.navDialog.close();
+      }
+    }
+  }
+
   handleClick(event : Event) {
     if (typeof event.target !== 'undefined' && event.target !== null) {
       switch ((event.target as HTMLButtonElement).value) {
-        case 'start':
-          // addNewGame({ id: 'new', start: new Date().toISOString() });
-          // store.dispatch(
-          //   addNewGame({ id: 'new', start: new Date().toISOString() }),
-          // );
-          sendToStore(
-            this,
-            addNewGame({ id: 'new', start: new Date().toISOString() }),
-          );
-          break;
-
-        case 'end':
-          // store.dispatch(forceEndGame('force'));
-          sendToStore(this, forceEndGame('force'));
-          break;
         case 'resume':
           // store.dispatch(selectGameToResume(null));
           sendToStore(this, selectGameToResume(null));
       }
     }
   };
+
+  // sendToRedux(event : CustomEvent) {
+  //   // console.group(ePre('sendToRedux'));
+  //   // console.log('event.type:', event.type);
+  //   // console.log('event.detail:', event.detail);
+  //   store.dispatch(event.detail);
+  //   // console.groupEnd();
+  // }
+
+  renderNavLink({ anchor, label } : TAppRoute) : TemplateResult {
+    return html`
+      <li>
+        <a href="#${anchor}" @click=${this.handleLinkClick}>
+          ${label}
+        </a>
+      </li>`;
+  }
 
   render() {
     let view : TemplateResult|string = '';
@@ -110,8 +156,32 @@ export class ScoreCards extends connect(store)(LitElement) {
 
     return html`
       <div class="score-card">
-        <h1>Scored</h1>
-        <p>Keep score for your favourite games</p>
+        <header>
+          <h1>Scored</h1>
+          <p>Keep score for your favourite games</p>
+          <nav>
+            <button
+              class="menu-toggle menu-toggle--open"
+              id="open-menu"
+              type="button"
+              value="open"
+              @click=${this.toggleNav}>
+              Open Menu
+            </button>
+            <dialog id="nav-menu">
+              <ul>
+                ${routes.map((route) => this.renderNavLink(route))}
+              </ul>
+            <button
+              class="menu-toggle menu-toggle--close"
+              type="button"
+              value="close"
+              id="close-menu"
+              @click=${this.toggleNav}>
+              Close Menu
+            </button>
+          </nav>
+        </header>
         ${view}
       </div>
     `
@@ -121,6 +191,7 @@ export class ScoreCards extends connect(store)(LitElement) {
     .score-card {
       padding: 1rem 1.5rem;
       border: 0.05rem solid #fff;
+      position: relative;
     }
     h1 {
       margin: 0 0 1rem;
@@ -130,6 +201,11 @@ export class ScoreCards extends connect(store)(LitElement) {
     }
     .score-card *:last-child {
       margin-bottom: 0.5rem;
+    }
+    .score-card  .menu-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
   `
 }
