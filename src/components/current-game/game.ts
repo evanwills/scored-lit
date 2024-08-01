@@ -1,10 +1,10 @@
-import { html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { TGameType, TGameTypes } from "../../types/custom-redux-types";
-import { EGameStates, TGameData } from "../../types/game-data";
+import { html, LitElement } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { TGameType, TGameTypes } from '../../types/custom-redux-types';
+import { EGameStates, TGameData } from '../../types/game-data.d'
 import './select-type';
-import { IIndividualPlayer, ITeam } from "../../types/players";
-import { inputHasValue } from "../../type-guards";
+import { IIndividualPlayer, ITeam } from '../../types/players';
+import { inputHasValue } from '../../type-guards';
 
 
 @customElement('current-game')

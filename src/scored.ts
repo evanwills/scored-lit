@@ -1,15 +1,17 @@
-import { LitElement, css, html } from 'lit'
+import { LitElement, TemplateResult, css, html } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { connect } from 'pwa-helpers';
 import { store } from './redux/store';
 import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';
 import { IGameRuleData } from './types/game-rules.d';
 import { IIndividualPlayer, ITeam } from './types/players.d';
-// import { getEpre } from './utils/general-utils';
+import { getEpre } from './utils/general-utils';
 import { addNewGame, forceEndGame, selectGameToResume } from './redux/currentGame/current-actions';
 import { sendToStore } from './redux/redux-utils';
+import { EAppStates } from './redux/app-state';
+import './components/current-game/game';
 
-// const ePre = getEpre('scored');
+const ePre = getEpre('scored');
 
 /**
  * An example element.
@@ -39,6 +41,16 @@ export class ScoreCards extends connect(store)(LitElement) {
 
   @state()
   gameState: EGameStates|null = null;
+
+  connectedCallback() {
+    console.group(ePre('connectedCallback'));
+    super.connectedCallback()
+
+    console.log('store:', store);
+    console.log('store.getState():', store.getState());
+    console.groupEnd();
+
+  }
 
   stateChanged(state : TScoredStore) {
     this.currentGame = state.currentGame;
@@ -81,23 +93,26 @@ export class ScoreCards extends connect(store)(LitElement) {
   };
 
   render() {
+    let view : TemplateResult|string = '';
+
+    const _state = store.getState();
+
+    switch (_state.appState) {
+      case EAppStates.game:
+        view = html`<current-game
+          .types=${_state.gameTypes}
+          .data=${_state.currentGame}
+          .players=${_state.players}
+          .teams=${_state.teams}
+          .pastGames=${_state.pastGames}></current-game>`;
+        break;
+    }
+
     return html`
       <div class="score-card">
         <h1>Scored</h1>
         <p>Keep score for your favourite games</p>
-
-        <p>
-          ${(this.currentGame === null)
-            ? html`
-              <button type="button" value="start" @click=${this.handleClick}>Start new game</button>
-              ${(this.restarters > 0)
-                ? html`<button type="button" value="resume" @click=${this.handleClick}>Resume interrupted game</button>`
-                : ''
-              }`
-            : ''
-          }
-          ${(this.gameState === EGameStates.PLAYING) ? html`<button type="button" value="end" @click=${this.handleClick}>End game</button>` : ''}
-        </p>
+        ${view}
       </div>
     `
   }

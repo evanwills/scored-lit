@@ -15,7 +15,7 @@ import {
   setGameMode,
   setHandLead,
   setPlayerScore,
-  setGameType,
+  setGameType as setGameTypeAction,
   updateHandLead,
   updatePlayerScore,
   selectGameToResume,
@@ -383,7 +383,7 @@ export default createReducer(
     builder.addCase(setGameMode, setMode);
     builder.addCase(setHandLead, setLead);
     builder.addCase(setPlayerScore, setScore);
-    builder.addCase(setGameType, setGameType);
+    builder.addCase(setGameTypeAction, setGameType);
     builder.addCase(updateHandLead, updateLead);
     builder.addCase(updatePlayerScore, updateScore);
   },

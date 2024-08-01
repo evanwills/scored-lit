@@ -1,3 +1,4 @@
+import { FEpre } from "../types/general";
 /**
  * Get the sum of all the scores up to and including the round being
  * rendered.
@@ -28,14 +29,14 @@ export const isNum = (input : any) : boolean => (typeof input === 'number' && !N
  * Get a function that returns the start of an error message
  * (or console group name) string for a given method
  *
- * @param {string} componentName Name of the component `ePre()` is
+ * @param componentName Name of the component `ePre()` is
  *                               being called from
- * @param {string} componentID   ID of component (if component is
+ * @param componentID   ID of component (if component is
  *                               used multiple times on a page)
  *
- * @returns {(method: string, before: boolean|null|string) : string}
+ * @returns {}
  */
-export const getEpre = (componentName : string, componentID = '') => {
+export const getEpre = (componentName : string, componentID = '') : FEpre => {
   const tail = (componentID !== '')
     ? ` (#${componentID})`
     : '';

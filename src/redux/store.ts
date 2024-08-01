@@ -3,6 +3,7 @@ import {
   // PayloadAction,
 } from '@reduxjs/toolkit';
 // import { TScoredStore } from '../types/game-data.d';
+import { isCustomEvent } from '../type-guards'
 import currentGameReducer from './currentGame/currentGameSlice';
 import customGamesReducer from './customGames/customGamesSlice';
 import gameRulesReducer from './gameRules/gameRulesSlice';
@@ -12,6 +13,7 @@ import playersReducer from './players/playersSlice';
 import { currentGameMiddleware } from './currentGame/current-middleware';
 import { pastGameMiddleware } from './pastGames/past-middleware';
 import { logger } from './redux-utils';
+import { appStateReducer } from './app-state';
 // import { persistStore, persistReducer } from 'redux-persist'
 // import { TScoredStore } from '../types/game-data';
 // import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
@@ -44,6 +46,7 @@ export const store = configureStore({
     pastGames: pastGamesReducer,
     players: playersReducer,
     teams: teamsReducer,
+    appState: appStateReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     currentGameMiddleware,
