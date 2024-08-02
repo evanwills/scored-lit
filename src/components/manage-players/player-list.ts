@@ -6,7 +6,7 @@ import {
 } from "lit/decorators.js";
 // import { getEpre } from "../../utils/general-utils";
 
-// const ePre = getEpre('select-type');
+// const ePre = getEpre('players-list');
 
 @customElement('players-list')
 export class PlayerList extends LitElement {
