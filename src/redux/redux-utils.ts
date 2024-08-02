@@ -19,10 +19,10 @@ export const logger : Middleware = store => next => action => {
  *                Redux store
  */
 export const sendToStore = (element: HTMLElement, payload : any) : void => {
-  // console.group('sendToStore()');
-  // console.log('element:', element);
-  // console.log('payload:', payload);
-  // console.groupEnd();
+  console.group('sendToStore()');
+  console.log('element:', element);
+  console.log('payload:', payload);
+  console.groupEnd();
   element.dispatchEvent(new CustomEvent(
     'reduxaction',
     {

@@ -69,6 +69,16 @@ export enum EGameStates {
   GAME_OVER,
 };
 
+export type InitialGameData = {
+  end: string|null,
+  forced: boolean,
+  id: string,
+  lead: TGameLead|null,
+  looser: string|null,
+  start: string,
+  winner: string|null,
+}
+
 /**
  * @type Data for a single game
  */

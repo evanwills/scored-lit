@@ -6,11 +6,17 @@ import './select-type';
 import { IIndividualPlayer, ITeam } from '../../types/players';
 import { inputHasValue } from '../../type-guards';
 import { sendToStore } from '../../redux/redux-utils';
-import { addNewGame, restartGame, restartNewPlayers, setGameMode } from '../../redux/currentGame/current-actions';
+import {
+  addNewGame,
+  restartGame,
+  restartNewPlayers,
+  // setGameMode,
+} from '../../redux/currentGame/current-actions';
 import { EAppStates, setAppState } from '../../redux/app-state';
-import { getEpre } from '../../utils/general-utils';
+// import { getEpre } from '../../utils/general-utils';
 
-const ePre = getEpre('current-game');
+// const ePre = getEpre('current-game');
+
 @customElement('current-game')
 export class CurrentGame extends LitElement {
   @property({ type: Array })

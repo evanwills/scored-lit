@@ -23,7 +23,9 @@ import {
 import {
   // builder,
   createReducer,
+  PayloadAction,
 } from '@reduxjs/toolkit';
+import { isGameData, isPayloadAction } from '../../type-guards';
 
 const notSet = 'There is no game set yet.';
 
@@ -78,26 +80,26 @@ export const setNewGame : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
+  console.group('redus.currentGame.setNewGame()');
+  console.log('state:', state);
+  console.log('action:', action);
   try {
     notEnded('setNewGame', 'CURRENT_GAME_SET_NEW_GAME', state);
   } catch(error: any) {
     throw Error(error);
   }
 
-  return {
-    end: null,
-    forced: false,
-    id: action.payload.id,
-    lead: null,
-    looser: null,
-    mode: EGameStates.SET_TYPE,
-    players: [],
-    scores: [],
-    start: action.payload.start,
-    teams: false,
-    type: '',
-    winner: null,
-  };
+  if (isPayloadAction(action)) {
+    const { payload } = (action as PayloadAction);
+
+    if (isGameData(payload)) {
+      console.groupEnd();
+      return { ...(payload as TGameData) };
+    }
+  }
+  console.groupEnd();
+
+  return state;
 };
 
 export const setNewSameGame : Reducer = (

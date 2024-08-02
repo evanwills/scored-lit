@@ -1,3 +1,5 @@
+import { nanoid } from "nanoid";
+import { EGameStates, InitialGameData, TGameData } from "../types/game-data";
 import { FEpre } from "../types/general";
 /**
  * Get the sum of all the scores up to and including the round being
@@ -57,5 +59,30 @@ export const getEpre = (componentName : string, componentID = '') : FEpre => {
     }
 
     return `${componentName}.${method}()${tail}${suffix} `;
+  };
+};
+
+export const getIdAndStart = () : InitialGameData => ({
+  end: null,
+  forced: false,
+  id: nanoid(),
+  lead: null,
+  looser: null,
+  start: new Date().toISOString(),
+  winner: null,
+});
+
+export const getNewGame = (type: string, mode: EGameStates) : TGameData => {
+  return {
+    ...getIdAndStart(),
+    forced: false,
+    lead: null,
+    looser: null,
+    mode,
+    players: [],
+    scores: [],
+    teams: false,
+    type,
+    winner: null,
   };
 };

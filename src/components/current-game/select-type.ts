@@ -4,7 +4,7 @@ import { TGameType, TGameTypes } from "../../types/custom-redux-types";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { sendToStore } from "../../redux/redux-utils";
 import { addNewGame } from "../../redux/currentGame/current-actions";
-import { getEpre } from "../../utils/general-utils";
+// import { getEpre } from "../../utils/general-utils";
 
 const optionLoopItem = (id: string) => (item : TGameType) => {
   const selected = (id === item.id)
@@ -17,7 +17,7 @@ const optionLoopItem = (id: string) => (item : TGameType) => {
     </option>`;
 };
 
-const ePre = getEpre('select-type');
+// const ePre = getEpre('select-type');
 
 @customElement('select-game-type')
 export class SelectGameType extends LitElement {
@@ -40,15 +40,7 @@ export class SelectGameType extends LitElement {
 
   handleConfirmType() {
     if (this._typeID !== '') {
-      // sendToStore(this, addNewGame(this._typeID));
-      this.dispatchEvent(new CustomEvent(
-        'typeconfirmed',
-        {
-          bubbles: true,
-          composed: true,
-          detail: this._typeID,
-        }),
-      );
+      sendToStore(this, addNewGame(this._typeID));
     }
   };
 
