@@ -86,3 +86,5 @@ export const getNewGame = (type: string, mode: EGameStates) : TGameData => {
     winner: null,
   };
 };
+
+export const normaliseName = (input : string) : string => input.trim().toLocaleLowerCase().replace(/[^a-z0-9]+/ig, '');

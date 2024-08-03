@@ -1,7 +1,10 @@
 import { AnyAction, Reducer } from "redux";
 import { IIndividualPlayer } from '../../types/players';
+import { createReducer } from "@reduxjs/toolkit";
+import { getLocalValue } from "../../utils/storage-utils";
+import { addNewPlayerAction, deletePlayerAction, updatePlayerAction } from "./players-actions";
 
-export const addNewPlayer : Reducer = (
+export const addNewPlayerReducer : Reducer = (
   state : Array<IIndividualPlayer>,
   action: AnyAction,
 ) => {
@@ -19,12 +22,12 @@ export const addNewPlayer : Reducer = (
   return [...state, action.payload];
 };
 
-export const deletePlayer : Reducer = (
+export const deletePlayerReducer : Reducer = (
   state : Array<IIndividualPlayer>,
   action: AnyAction,
 ) => state.filter((player) => player.id !== action.payload);
 
-export const updatePlayer : Reducer = (
+export const updatePlayerReducer : Reducer = (
   state : Array<IIndividualPlayer>,
   action: AnyAction,
 ) => state.map(
@@ -38,3 +41,14 @@ export const updatePlayer : Reducer = (
       : player;
   },
 );
+
+export const initialState : IIndividualPlayer[] = getLocalValue('players', [], 'object|null');
+
+export default createReducer(
+  initialState,
+  (builder) => {
+    builder.addCase(addNewPlayerAction, addNewPlayerReducer);
+    builder.addCase(deletePlayerAction, deletePlayerReducer);
+    builder.addCase(updatePlayerAction, updatePlayerReducer);
+  }
+)

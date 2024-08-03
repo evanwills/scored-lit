@@ -3,7 +3,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { TGameType, TGameTypes } from "../../types/custom-redux-types";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { sendToStore } from "../../redux/redux-utils";
-import { addNewGame } from "../../redux/currentGame/current-actions";
+import { addNewGameAction } from "../../redux/currentGame/current-actions";
 // import { getEpre } from "../../utils/general-utils";
 
 const optionLoopItem = (id: string) => (item : TGameType) => {
@@ -40,7 +40,7 @@ export class SelectGameType extends LitElement {
 
   handleConfirmType() {
     if (this._typeID !== '') {
-      sendToStore(this, addNewGame(this._typeID));
+      sendToStore(this, addNewGameAction(this._typeID));
     }
   };
 

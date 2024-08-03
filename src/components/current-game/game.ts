@@ -7,9 +7,9 @@ import { IIndividualPlayer, ITeam } from '../../types/players';
 import { inputHasValue } from '../../type-guards';
 import { sendToStore } from '../../redux/redux-utils';
 import {
-  addNewGame,
-  restartGame,
-  restartNewPlayers,
+  addNewGameAction,
+  restartGameAction,
+  restartNewPlayersAction,
   // setGameMode,
 } from '../../redux/currentGame/current-actions';
 import { EAppStates, setAppState } from '../../redux/app-state';
@@ -91,19 +91,19 @@ export class CurrentGame extends LitElement {
         case 'playagain':
           // @TODO Do some sanity checking to make sure it's OK to
           //       start a new game
-          sendToStore(this, restartGame(null));
+          sendToStore(this, restartGameAction(null));
           break;
 
           case 'playagaindiff':
             // @TODO Do some sanity checking to make sure it's OK to
             //       start a new game
-            sendToStore(this, restartNewPlayers(null));
+            sendToStore(this, restartNewPlayersAction(null));
             break;
 
           case 'playdiff':
             // @TODO Do some sanity checking to make sure it's OK to
             //       start a new game
-            sendToStore(this, restartNewPlayers(null));
+            sendToStore(this, restartNewPlayersAction(null));
             break;
 
           case 'resume':
@@ -128,7 +128,7 @@ export class CurrentGame extends LitElement {
 
   handleTypeConfirmed(event: CustomEvent) {
     this.showGameTypeSelect = false;
-    sendToStore(this, addNewGame(event.detail))
+    sendToStore(this, addNewGameAction(event.detail))
   }
 
   renderGameTypeSelect() {

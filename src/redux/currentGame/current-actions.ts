@@ -132,39 +132,39 @@ export const currentGameActions = {
  *
  * @property ADD_NEW_GAME
  */
-export const addNewGame = createAction<string, 'CURRENT_GAME_ADD_NEW'>('CURRENT_GAME_ADD_NEW');
+export const addNewGameAction = createAction<string, 'CURRENT_GAME_ADD_NEW'>('CURRENT_GAME_ADD_NEW');
 
-export const addGamePlayer = createAction<IPlayer, 'CURRENT_GAME_ADD_PLAYER'>( 'CURRENT_GAME_ADD_PLAYER');
+export const addGamePlayerAction = createAction<IPlayer, 'CURRENT_GAME_ADD_PLAYER'>( 'CURRENT_GAME_ADD_PLAYER');
 
-export const endGame = createAction<string, 'CURRENT_GAME_END'>('CURRENT_GAME_END');
+export const endGameAction = createAction<string, 'CURRENT_GAME_END'>('CURRENT_GAME_END');
 
-export const forceEndGame = createAction<string, 'CURRENT_GAME_FORCE_END'>('CURRENT_GAME_FORCE_END');
+export const forceEndGameAction = createAction<string, 'CURRENT_GAME_FORCE_END'>('CURRENT_GAME_FORCE_END');
 
-export const naturalEndGame = createAction<string, 'CURRENT_GAME_NATURAL_END'>('CURRENT_GAME_NATURAL_END');
+export const naturalEndGameAction = createAction<string, 'CURRENT_GAME_NATURAL_END'>('CURRENT_GAME_NATURAL_END');
 
-export const restartGame = createAction<null, 'CURRENT_GAME_RESTART_SAME'>('CURRENT_GAME_RESTART_SAME');
+export const restartGameAction = createAction<null, 'CURRENT_GAME_RESTART_SAME'>('CURRENT_GAME_RESTART_SAME');
 
-export const restartNewPlayers = createAction<null, 'CURRENT_GAME_START_SAME_NEW_PLAYERS'>('CURRENT_GAME_START_SAME_NEW_PLAYERS');
+export const restartNewPlayersAction = createAction<null, 'CURRENT_GAME_START_SAME_NEW_PLAYERS'>('CURRENT_GAME_START_SAME_NEW_PLAYERS');
 
-export const resumeSelectedGame = createAction<TGameData, 'CURRENT_GAME_RESUME'>('CURRENT_GAME_RESUME');
+export const resumeSelectedGameAction = createAction<TGameData, 'CURRENT_GAME_RESUME'>('CURRENT_GAME_RESUME');
 
-export const selectGameToResume = createAction<null, 'CURRENT_GAME_SELECT_RESUME'>('CURRENT_GAME_SELECT_RESUME');
+export const selectGameToResumeAction = createAction<null, 'CURRENT_GAME_SELECT_RESUME'>('CURRENT_GAME_SELECT_RESUME');
 
-export const setGameMode = createAction<EGameStates, 'CURRENT_GAME_SET_MODE'>('CURRENT_GAME_SET_MODE');
+export const setGameModeAction = createAction<EGameStates, 'CURRENT_GAME_SET_MODE'>('CURRENT_GAME_SET_MODE');
 
-export const setHandLead = createAction<TActionPayloadGameLead, 'CURRENT_GAME_SET_LEAD'>('CURRENT_GAME_SET_LEAD');
+export const setHandLeadAction = createAction<TActionPayloadGameLead, 'CURRENT_GAME_SET_LEAD'>('CURRENT_GAME_SET_LEAD');
 
-export const setNewGame = createAction<TGameData, 'CURRENT_GAME_SET_NEW_GAME'>('CURRENT_GAME_SET_NEW_GAME');
+export const setNewGameAction = createAction<TGameData, 'CURRENT_GAME_SET_NEW_GAME'>('CURRENT_GAME_SET_NEW_GAME');
 
-export const setPlayerScore = createAction<TActionPayloadGameSetScore, 'CURRENT_GAME_SET_SCORE'>('CURRENT_GAME_SET_SCORE');
+export const setPlayerScoreAction = createAction<TActionPayloadGameSetScore, 'CURRENT_GAME_SET_SCORE'>('CURRENT_GAME_SET_SCORE');
 
 /**
  * Set the type of game being played
  *
  * @property SET_TYPE
  */
-export const setGameType = createAction<string, 'CURRENT_GAME_SET_TYPE'>('CURRENT_GAME_SET_TYPE');
+export const setGameTypeAction = createAction<string, 'CURRENT_GAME_SET_TYPE'>('CURRENT_GAME_SET_TYPE');
 
-export const updateHandLead = createAction<TActionPayloadGameLead, 'CURRENT_GAME_UPDATE_LEAD'>('CURRENT_GAME_UPDATE_LEAD');
+export const updateHandLeadAction = createAction<TActionPayloadGameLead, 'CURRENT_GAME_UPDATE_LEAD'>('CURRENT_GAME_UPDATE_LEAD');
 
-export const updatePlayerScore = createAction<TActionPayloadGameUpdateScore, 'CURRENT_GAME_UPDATE_SCORE'>('CURRENT_GAME_UPDATE_SCORE');
+export const updatePlayerScoreAction = createAction<TActionPayloadGameUpdateScore, 'CURRENT_GAME_UPDATE_SCORE'>('CURRENT_GAME_UPDATE_SCORE');

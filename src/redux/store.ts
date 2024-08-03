@@ -4,12 +4,12 @@ import {
 } from '@reduxjs/toolkit';
 // import { TScoredStore } from '../types/game-data.d';
 import { isCustomEvent } from '../type-guards'
-import currentGameReducer from './currentGame/currentGameSlice';
+import currentGameReducer from './currentGame/current-reducers';
 import customGamesReducer from './customGames/customGamesSlice';
 import gameRulesReducer from './gameRules/gameRulesSlice';
 import pastGamesReducer from './pastGames/pastGamesSlice';
-import teamsReducer from './teams/teamsSlice';
-import playersReducer from './players/playersSlice';
+import teamsReducer from './teams/team-reducers';
+import playersReducer from './players/players-reducers';
 import { currentGameMiddleware } from './currentGame/current-middleware';
 import { pastGameMiddleware } from './pastGames/past-middleware';
 import { logger } from './redux-utils';

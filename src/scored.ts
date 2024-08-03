@@ -5,13 +5,14 @@ import { store } from './redux/store';
 import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';
 import { IGameRuleData } from './types/game-rules.d';
 import { IIndividualPlayer, ITeam } from './types/players.d';
-// import { getEpre } from './utils/general-utils';
-import { selectGameToResume } from './redux/currentGame/current-actions';
+import { selectGameToResumeAction } from './redux/currentGame/current-actions';
 import { sendToStore } from './redux/redux-utils';
 import { EAppStates, setAppState } from './redux/app-state';
 import { TAppRoute } from './types/general';
 import { inputHasValue, linkHasHref } from './type-guards';
+// import { getEpre } from './utils/general-utils';
 import './components/current-game/game';
+import './components/manage-players/player-list';
 
 // const ePre = getEpre('scored');
 const routes : TAppRoute[] = [
@@ -29,6 +30,12 @@ const routes : TAppRoute[] = [
  */
 @customElement('score-cards')
 export class ScoreCards extends connect(store)(LitElement) {
+  // ------------------------------------------------------
+  // START: props
+
+  //  END:  props
+  // ------------------------------------------------------
+  // START: state
   @state()
   currentGame : TGameData|null = null;
 
@@ -50,7 +57,20 @@ export class ScoreCards extends connect(store)(LitElement) {
   @state()
   gameState: EGameStates|null = null;
 
+  @state()
+  gameTypes: IGameRuleData[] = [];
+
+  @state()
+  appState: EAppStates = EAppStates.game;
+
+  @state()
+  firstTime: boolean = true;
+
   private navDialog : HTMLDialogElement|null = null;
+
+  //  END:  state
+  // ------------------------------------------------------
+  // START: lifecycle methods
 
   // connectedCallback() {
   //   console.group(ePre('connectedCallback'));
@@ -65,8 +85,10 @@ export class ScoreCards extends connect(store)(LitElement) {
     this.currentGame = state.currentGame;
     this.customGames = state.customGames;
     this.pastGames = state.pastGames;
+    this.gameTypes = state.gameTypes;
     this.players = state.players;
     this.teams = state.teams;
+    this.appState = state.appState;
 
     const tmp = this.pastGames.filter(game => game.forced === true);
     this.restarters = tmp.length;
@@ -75,6 +97,24 @@ export class ScoreCards extends connect(store)(LitElement) {
       ? this.currentGame.mode
       : null;
   };
+
+  //  END:  lifecycle methods
+  // ------------------------------------------------------
+  // START: helper methods
+
+  presetView() {
+    if (this.firstTime === true) {
+      this.firstTime = false;
+      const tmp = window.location.hash.substring(1);
+      if (this.appState !== tmp) {
+        sendToStore(this, setAppState(tmp));
+      }
+    }
+  }
+
+  //  END:  helper methods
+  // ------------------------------------------------------
+  // START: event handlers
 
   toggleNav(action: string) {
     if (this.navDialog === null) {
@@ -122,10 +162,14 @@ export class ScoreCards extends connect(store)(LitElement) {
       switch ((event.target as HTMLButtonElement).value) {
         case 'resume':
           // store.dispatch(selectGameToResume(null));
-          sendToStore(this, selectGameToResume(null));
+          sendToStore(this, selectGameToResumeAction(null));
       }
     }
   };
+
+  //  END:  event handlers
+  // ------------------------------------------------------
+  // START: render helpers
 
   renderNavLink({ anchor, label } : TAppRoute) : TemplateResult {
     return html`
@@ -136,21 +180,32 @@ export class ScoreCards extends connect(store)(LitElement) {
       </li>`;
   }
 
-  render() {
-    let view : TemplateResult|string = '';
-
-    const _state = store.getState();
-
-    switch (_state.appState) {
+  renderView() : TemplateResult|string {
+    switch (this.appState) {
       case EAppStates.game:
-        view = html`<current-game
-          .types=${_state.gameTypes}
-          .data=${_state.currentGame}
-          .players=${_state.players}
-          .teams=${_state.teams}
-          .pastGames=${_state.pastGames}></current-game>`;
-        break;
+        return html`<current-game
+          .types=${this.gameTypes}
+          .data=${this.currentGame}
+          .players=${this.players}
+          .teams=${this.teams}
+          .pastGames=${this.pastGames}></current-game>`;
+
+      case EAppStates.players:
+        return html`<players-list
+          .players=${this.players}
+          .teams=${this.teams}></players-list>`
+
+      default:
+        return '';
     }
+  }
+
+  //  END:  render helpers
+  // ------------------------------------------------------
+  // START: main render method
+
+  render() {
+    this.presetView();
 
     return html`
       <div class="score-card">
@@ -184,10 +239,16 @@ export class ScoreCards extends connect(store)(LitElement) {
             </dialog>
           </nav>
         </header>
-        ${view}
+        <main>
+          ${this.renderView()}
+        </main>
       </div>
     `
   }
+
+  //  END:  main render method
+  // ------------------------------------------------------
+  // START: styles
 
   static styles = css`
     .score-card {
@@ -310,6 +371,9 @@ export class ScoreCards extends connect(store)(LitElement) {
       top: 0;
     }
   `
+
+  //  END:  styles
+  // ------------------------------------------------------
 }
 
 declare global {

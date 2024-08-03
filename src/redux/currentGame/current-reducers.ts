@@ -5,20 +5,21 @@ import {
 } from '../../utils/general-utils';
 import { getLocalValue } from '../../utils/storage-utils';
 import {
-  addNewGame,
-  addGamePlayer,
-  forceEndGame,
-  naturalEndGame,
-  restartGame,
-  restartNewPlayers,
-  resumeSelectedGame,
-  setGameMode,
-  setHandLead,
-  setPlayerScore,
-  setGameType as setGameTypeAction,
-  updateHandLead,
-  updatePlayerScore,
-  selectGameToResume,
+  addNewGameAction,
+  addGamePlayerAction,
+  forceEndGameAction,
+  naturalEndGameAction,
+  restartGameAction,
+  restartNewPlayersAction,
+  resumeSelectedGameAction,
+  setGameModeAction,
+  setHandLeadAction,
+  setPlayerScoreAction,
+  setGameTypeAction,
+  updateHandLeadAction,
+  updatePlayerScoreAction,
+  selectGameToResumeAction,
+  setNewGameAction,
 } from './current-actions';
 import {
   // builder,
@@ -45,7 +46,7 @@ const notPlaying = (func: string, action: string, state : TGameData|null) : fals
 };
 
 const notEnded = (func: string, action: string, state : TGameData|null) : false => {
-  if (state !== null && state.mode !== EGameStates.PLAYING) {
+  if (state === null ||state.mode !== EGameStates.PLAYING) {
     return false;
   }
   let _state = 'There is no game set yet.'
@@ -76,7 +77,7 @@ const wrongMode = (func: string, action: string, mode: EGameStates, state : TGam
   );
 };
 
-export const setNewGame : Reducer = (
+export const setNewGameReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -102,7 +103,7 @@ export const setNewGame : Reducer = (
   return state;
 };
 
-export const setNewSameGame : Reducer = (
+export const setNewSameGameReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -149,7 +150,7 @@ export const setSameGameNewPlayers : Reducer = (
   };
 };
 
-export const setGameType : Reducer = (
+export const setGameTypeReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -166,7 +167,7 @@ export const setGameType : Reducer = (
   };
 };
 
-export const setPlayer : Reducer = (
+export const setPlayerReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -193,7 +194,7 @@ export const setPlayer : Reducer = (
     };
 };
 
-export const endGameNatural : Reducer = (
+export const endGameNaturalReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -214,7 +215,7 @@ export const endGameNatural : Reducer = (
   };
 };
 
-export const endGameForced : Reducer = (
+export const endGameForcedReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -232,7 +233,7 @@ export const endGameForced : Reducer = (
   };
 };
 
-export const setLead : Reducer = (
+export const setLeadReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -248,7 +249,7 @@ export const setLead : Reducer = (
   };
 };
 
-export const setMode : Reducer = (
+export const setModeReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -264,7 +265,7 @@ export const setMode : Reducer = (
   };
 };
 
-export const resumeInterruptedGame : Reducer = (
+export const resumeInterruptedGameReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -277,7 +278,7 @@ export const resumeInterruptedGame : Reducer = (
   return action.payload;
 };
 
-export const updateLead : Reducer = (
+export const updateLeadReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -305,7 +306,7 @@ export const updateLead : Reducer = (
   };
 };
 
-export const setScore : Reducer = (
+export const setScoreReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -340,7 +341,7 @@ export const setScore : Reducer = (
   };
 };
 
-export const updateScore : Reducer = (
+export const updateScoreReducer : Reducer = (
   state : TGameData,
   action: AnyAction
 ) : TGameData => {
@@ -369,25 +370,41 @@ export const updateScore : Reducer = (
   };
 };
 
+export const currentGameDefaultReducer : Reducer = (
+  state : TGameData,
+  action: AnyAction
+) : TGameData => {
+  console.group('currentGameDefaultReducer()');
+  console.log('state:', state);
+  console.log('action:', action);
+  console.log('action.type:', action.type);
+  console.log('action.payload:', action.payload);
+  console.groupEnd();
+  return state;
+}
+
+
 const initialState : TGameData|null = getLocalValue('currentGame', null, 'object|null');
 
 export default createReducer(
   initialState,
   (builder) => {
-    builder.addCase(addNewGame, setNewGame);
-    builder.addCase(addGamePlayer, setPlayer);
-    builder.addCase(forceEndGame, endGameForced);
-    builder.addCase(naturalEndGame, endGameNatural);
-    builder.addCase(restartGame, setNewSameGame);
-    builder.addCase(restartNewPlayers, setSameGameNewPlayers);
-    builder.addCase(resumeSelectedGame, resumeInterruptedGame);
-    builder.addCase(selectGameToResume, (state, _action) => state);
-    builder.addCase(setGameMode, setMode);
-    builder.addCase(setHandLead, setLead);
-    builder.addCase(setPlayerScore, setScore);
-    builder.addCase(setGameTypeAction, setGameType);
-    builder.addCase(updateHandLead, updateLead);
-    builder.addCase(updatePlayerScore, updateScore);
+    builder.addCase(addNewGameAction, setNewGameReducer);
+    builder.addCase(setNewGameAction, setNewGameReducer);
+    builder.addCase(addGamePlayerAction, setPlayerReducer);
+    builder.addCase(forceEndGameAction, endGameForcedReducer);
+    builder.addCase(naturalEndGameAction, endGameNaturalReducer);
+    builder.addCase(restartGameAction, setNewSameGameReducer);
+    builder.addCase(restartNewPlayersAction, setSameGameNewPlayers);
+    builder.addCase(resumeSelectedGameAction, resumeInterruptedGameReducer);
+    builder.addCase(selectGameToResumeAction, (state, _action) => state);
+    builder.addCase(setGameModeAction, setModeReducer);
+    builder.addCase(setHandLeadAction, setLeadReducer);
+    builder.addCase(setPlayerScoreAction, setScoreReducer);
+    builder.addCase(setGameTypeAction, setGameTypeReducer);
+    builder.addCase(updateHandLeadAction, updateLeadReducer);
+    builder.addCase(updatePlayerScoreAction, updateScoreReducer);
+    builder.addDefaultCase(currentGameDefaultReducer);
   },
 );
 

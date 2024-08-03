@@ -1,3 +1,4 @@
+import { EAppStates } from '../redux/app-state';
 import { IPlayer, IIndividualPlayer, TTeam } from './players';
 import { TScoreCard } from './score-card';
 
@@ -170,6 +171,11 @@ export type TGameData = {
  * @property data for the whole app
  */
 export type TScoredStore = {
+  /**
+   * @property The view currently being rendered
+   */
+  appState: EAppStates,
+
   /**
    * @property The game currently in progress and taking scores
    */
