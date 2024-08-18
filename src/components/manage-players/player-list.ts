@@ -4,14 +4,21 @@ import {
   property,
   state,
 } from 'lit/decorators.js';
-import { IIndividualPlayer, IIndividualPlayerFilterable, ITeam } from '../../types/players';
+import { IIndividualPlayer, ITeam } from '../../types/players';
 import { inputHasValue } from '../../type-guards';
 import { normaliseName } from '../../utils/general-utils';
-import { sendToStore } from '../../redux/redux-utils';
-import { addNewPlayerAction } from '../../redux/players/players-actions';
+// import { sendToStore } from '../../redux/redux-utils';
+// import { addNewPlayerAction, updatePlayerAction } from '../../redux/players/players-actions';
 import { getEpre } from '../../utils/general-utils';
-import { nanoid } from 'nanoid';
-import { renderFilterInput, renderNoPlayers, renderPlayerForm, renderPlayersList } from './pure-player-list-renderers';
+// import { nanoid } from 'nanoid';
+import {
+  renderFilterInput,
+  renderNoPlayers,
+  // renderPlayerForm,
+} from './pure-player-list-renderers';
+import './player-list-item';
+import './player-data-form';
+
 
 const ePre = getEpre('players-list');
 
@@ -40,10 +47,13 @@ export class PlayerList extends LitElement {
   rawFilter: string = '';
 
   @state()
-  allPlayers: IIndividualPlayerFilterable[] = [];
+  allPlayers: IIndividualPlayer[] = [];
 
   @state()
-  filteredPlayers: IIndividualPlayerFilterable[] = [];
+  filteredPlayers: IIndividualPlayer[] = [];
+
+  @state()
+  _normalisedNames : string[] = [];
 
   @state()
   newPlayerGivenName: string = '';
@@ -65,21 +75,20 @@ export class PlayerList extends LitElement {
   // ------------------------------------------------------
   // START: helper methods
 
-
-
   prepareAllPlayers() {
     if (this.players.length !== this.allPlayers.length) {
       console.group(ePre('prepareAllPlayers'));
       console.log('this.players:', this.players)
       console.log('this.allPlayers (before):', this.allPlayers)
       console.log('this.filteredPlayers (before):', this.filteredPlayers)
-      this.allPlayers = this.players.map((player: IIndividualPlayer) : IIndividualPlayerFilterable => {
+      this.allPlayers = this.players.map((player: IIndividualPlayer) : IIndividualPlayer => {
         return {
           ...player,
           normalisedName: normaliseName(player.name + player.secondName),
         };
       })
       this.filteredPlayers = [...this.allPlayers];
+      this._normalisedNames = this.allPlayers.map((player) => player.normalisedName);
       console.log('this.filteredPlayers (after):', this.filteredPlayers)
       console.log('this.allPlayers (after):', this.allPlayers)
       console.groupEnd();
@@ -107,71 +116,25 @@ export class PlayerList extends LitElement {
     }
   }
 
-  handleNameKeyUp(event: InputEvent) {
-    if (typeof event.target !== 'undefined'
-      && event.target !== null
-      && inputHasValue(event.target)
-    ) {
-      const value = event.target.value.replace(/^\s+|[^a-z0-9 ]+/ig, '');
-
-      if (event.target.id.indexOf('family') > -1) {
-        this.newPlayerFamilyName = value;
-      } else {
-        this.newPlayerGivenName = value;
-      }
-      this.newPlayerNormalised = normaliseName(this.newPlayerGivenName + this.newPlayerFamilyName);
-
-      const tmp = this.allPlayers.find((player) => player.normalisedName === this.newPlayerNormalised);
-
-      this.newPlayerDuplicate = typeof tmp !== 'undefined';
-    }
-  }
-
-  handleAddPlayer() {
-    if (this.newPlayerDuplicate === false) {
-      sendToStore(
-        this,
-        addNewPlayerAction({
-          id: nanoid(),
-          name: this.newPlayerGivenName,
-          secondName: this.newPlayerFamilyName,
-        })
-      );
-      this.newPlayerGivenName = '';
-      this.newPlayerFamilyName = '';
-    }
-  }
-
-  handleEditPlayer() {
-    if (this.newPlayerDuplicate === false) {
-      sendToStore(
-        this,
-        addNewPlayerAction({
-          id: nanoid(),
-          name: this.newPlayerGivenName,
-          secondName: this.newPlayerFamilyName,
-        })
-      );
-      this.newPlayerGivenName = '';
-      this.newPlayerFamilyName = '';
-    }
-  }
-
   //  END:  event handlers
   // ------------------------------------------------------
   // START: main render method
 
   render() {
     this.prepareAllPlayers();
+    console.log('Array.isArray(this.filteredPlayers[0]):', Array.isArray(this.filteredPlayers[0]));
+    console.log('this.filteredPlayers[0]:', this.filteredPlayers[0]);
 
     const playerList = (this.filteredPlayers.length > 0)
-      ? renderPlayersList(
-        this.filteredPlayers,
-        this.handleNameKeyUp,
-        this.handleEditPlayer,
-        this.selecting,
-        this.newPlayerDuplicate,
-      )
+      ? html`
+        <ul class="list-wrap">
+          ${this.filteredPlayers.map((player) => html`<player-list-item
+            given-name="${player.name}"
+            family-name="${player.secondName}"
+            normalised-names=${this._normalisedNames}
+            player-id="${player.id}"
+            ></player-list-item>`)}
+        </ul>`
       : renderNoPlayers(
         this.players,
         this.filteredPlayers,
@@ -186,17 +149,12 @@ export class PlayerList extends LitElement {
           this.handleFilterKeyUp,
         )}
       </header>
-      <main>
+      <main >
         ${playerList}
       </main>
       <footer>
-        ${renderPlayerForm(
-          this.newPlayerGivenName,
-          this.newPlayerFamilyName,
-          this.newPlayerDuplicate,
-          this.handleNameKeyUp,
-          this.handleAddPlayer,
-        )}
+        <player-data-form
+          normalised-names=${this._normalisedNames}></player-data-form>
       </footer>
     </section>`;
   }

@@ -1,7 +1,8 @@
 import { html, TemplateResult } from 'lit';
-import { IIndividualPlayer, IIndividualPlayerFilterable } from '../../types/players';
 import { repeat } from 'lit/directives/repeat.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { IIndividualPlayer, IIndividualPlayerFilterable } from '../../types/players';
+import './player-data-form';
 
 export const renderFilterInput = (
   players : IIndividualPlayerFilterable[],
@@ -22,67 +23,53 @@ export const renderFilterInput = (
   return '';
 };
 
+/**
+ * Get a player item for a list of players
+ *
+ * @param player       Data for player being rendered
+ * @param keyupHandler Key up event handler
+ * @param clickHandler Click event handler
+ * @param selecting    Whether or not the list is for selecting
+ *                     a player for a game
+ * @param isDupe       Whether or not the player's name already
+ *                     exists in the list of players
+ *
+ * @returns HTML for player list item
+ */
 export const renderPlayerItem = (
   player: IIndividualPlayerFilterable,
-  keyupHandler : Function,
-  clickHandler : Function,
-  selecting: boolean = false,
-  isDupe : boolean,
+  normalisedNames: string[],
 ) : TemplateResult|string => {
   // const label = (selecting === true)
   //   ? 'Add'
   //   : 'Edit';
   const name = `${player.name} ${player.secondName}`;
+  return html`
+    <li class="list-item">
+      <details>
+        <summary>
+          <span class="sr-only">Edit</span> ${name}
+        </summary>
 
-  let output : TemplateResult|string = '';
-
-  if (selecting === true) {
-    output = html`
-      <label for="player-${player.id}">
-        <span class="sr-only">Add</span> ${name}
-      </label>
-      <button
-        type="button"
-        id="player-${player.id}"
-        value="${player.id}"
-        @click="${clickHandler}">Add</button>`;
-  } else {
-    output = html`<details>
-      <summary>
-        <span class="sr-only">Edit</span> ${name}
-      </summary>
-      ${renderPlayerForm(
-        player.name,
-        player.secondName,
-        isDupe,
-        keyupHandler,
-        clickHandler,
-        true,
-      )}
-    </details>`;
-  }
-
-  return html`<li class="list-item">${output}</li>`;
+        <player-data-form
+          edit
+          given-name="${player.name}"
+          family-name="${player.secondName}"
+          normalised-names=${normalisedNames}></player-data-form>
+      </details>
+    </li>`;
 };
 
 export const renderPlayersList = (
   players : IIndividualPlayerFilterable[],
-  keyupHandler : Function,
-  clickHandler : Function,
-  selecting: boolean = false,
-  isDupe : boolean,
+  normalisedNames: string[],
 ) : TemplateResult => html`
     <ul class="list-wrap">
       ${repeat(
         players,
-        (player) => player.id,
-        (player) => renderPlayerItem(
-          player,
-          keyupHandler,
-          clickHandler,
-          selecting,
-          isDupe,
-        ))}
+        (player) => player.normalisedName,
+        (player) => renderPlayerItem(player, normalisedNames))
+      }
     </ul>`;
 
 export const renderNoPlayers = (
@@ -101,101 +88,36 @@ export const renderNoPlayers = (
   return '';
 };
 
-export const renderDuplicatePlayerMsg = (
-  givenName : string,
-  familyName : string,
-  isDupe : boolean,
-) : TemplateResult|string => {
-  if (isDupe === true) {
-    return html`
-      <p id="new-player-duplicate-msg">
-        Player "${givenName} ${familyName}" already exists in the system.
-        Please choose a different name
-      <p>`;
-  }
-
-  return '';
-};
-
 export const renderNameField = (
+  id: string,
   label: string,
   value: string,
+  initialVal: string,
   placeholder: string,
   isDupe: boolean,
   handler: Function,
 ) : TemplateResult => {
   const key = label.toLocaleLowerCase();
+  const _id = (typeof id === 'string' && id.trim() !== '')
+    ? id
+    : 'new-player';
   const descByID = (isDupe === true)
-  ? 'new-player-duplicate-msg'
-  : undefined;
-  const fieldID = `players-list-new-player-${key}-name`;
+    ? `${_id}-duplicate-msg`
+    : undefined;
+
+  const fieldID = `edit-${_id}-${key}-name`;
 
   return html`
     <li class="field-item">
       <label for="${fieldID}">${label} name</label>
       <input
         .aria-describedby=${ifDefined(descByID)}
+        data-initial="${initialVal}"
         id="${fieldID}"
         type="text"
         .value="${value}"
-        pattern="^[a-z0-9]+( +[a-z0-9]+)*$"
+        pattern="^[a-zA-Z0-9]+( +[a-zA-Z0-9]+)*$"
         placeholder="${placeholder}"
         @keyup=${handler} />
     </li>`;
 };
-
-export const renderPlayerForm = (
-  givenName : string,
-  familyName : string,
-  isDupe : boolean,
-  keyupHandler: Function,
-  clickHandler: Function,
-  editing: boolean = false,
-) => {
-  const pre = 'new-player-btn'
-  const btnCls = (isDupe === true)
-    ? `${pre} ${pre}-error`
-    : pre;
-  const labelBy = 'players-list-new-player-head';
-
-  let label = 'Add';
-  let heading = 'New player';
-
-  if (editing === true) {
-    label = 'Update';
-    heading = `Update ${givenName} ${familyName}`;
-  }
-
-  return html`
-    <div role="group" arial-labeldby="${labelBy}">
-      <h2 id=="${labelBy}">${heading}</h2>
-      <ul class="field-wrap">
-        ${renderNameField(
-          'Given',
-          givenName,
-          'Gabbie',
-          isDupe,
-          keyupHandler,
-        )}
-        ${renderNameField(
-          'Family',
-          familyName,
-          'Augustus',
-          isDupe,
-          keyupHandler,
-        )}
-      </ul>
-
-      ${renderDuplicatePlayerMsg(
-        givenName,
-        familyName,
-        isDupe,
-      )}
-
-      <button
-        .class="${btnCls}"
-        type="button"
-        value="${label.toLocaleLowerCase()}"
-        @click=${clickHandler}>${label} player</button>
-    </div>`;
-}

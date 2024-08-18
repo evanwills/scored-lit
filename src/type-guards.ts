@@ -9,6 +9,9 @@ export const isPayloadAction = (action: AnyAction): action is PayloadAction => {
   return (action as PayloadAction).payload !== undefined;
 };
 
+// export const eventHasTarget = (result : IDBDatabase) : result is IDBDatabase => {
+
+// };
 
 export const inputHasValue = (target: EventTarget): target is HTMLInputElement => {
   return (target as HTMLInputElement).value !== undefined;

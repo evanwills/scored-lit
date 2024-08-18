@@ -282,6 +282,11 @@ export class ScoreCards extends connect(store)(LitElement) {
       background-color: rgba(0, 0, 0, 0.8);
     }
     .score-card .menu-toggle {
+      background-color: transparent;
+      border-color: #fff;
+      border-bottom-left-radius: 0.3rem;
+      border-right: none;
+      border-top: none;
       display: block;
       height: 2rem;
       line-height: 5rem;
