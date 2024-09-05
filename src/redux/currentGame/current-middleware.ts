@@ -24,12 +24,13 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
             total: 0,
             position: 0,
           })),
-          state: EGameStates.PLAYING,
+          state: EGameStates.ADD_PLAYERS,
         },
       });
 
     case currentGameActions.RESTART_CHANGE_PLAYERS:
       console.groupEnd();
+
       return next({
         type: currentGameActions.SET_NEW,
         payload: {
@@ -37,7 +38,9 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
           ...getIdAndStart(),
           scores: [],
           players: [],
-          state: EGameStates.ADD_PLAYERS,
+          mode: (typeof current !== 'undefined' && current !== null && current.scores.length <= 0)
+            ? EGameStates.ADD_PLAYERS
+            : EGameStates.PLAYING,
         },
       });
 
@@ -63,7 +66,7 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
       };
       store.dispatch({
         ...action,
-        type: pastGameActions.ADD_NEW,
+        type: pastGameActions.CREATE,
         payload: endedGame
       });
       return next({

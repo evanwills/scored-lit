@@ -7,7 +7,7 @@ import {
 } from 'lit/decorators.js';
 import { renderNameField } from './pure-player-list-renderers';
 import { sendToStore } from '../../redux/redux-utils';
-import { addNewPlayerAction, updatePlayerAction } from '../../redux/players/players-actions';
+import { addNewPlayerAction, deletePlayerAction, updatePlayerAction } from '../../redux/players/players-actions';
 import { nanoid } from 'nanoid';
 import { inputHasValue } from '../../type-guards';
 import { normaliseName } from '../../utils/general-utils';
@@ -149,6 +149,10 @@ export class PlayerDataForm extends LitElement {
     console.groupEnd();
   }
 
+  deleteHandler() {
+    sendToStore(this, deletePlayerAction(this.playerID));
+  }
+
   //  END:  event handlers
   // ------------------------------------------------------
   // START: main render method
@@ -227,8 +231,19 @@ export class PlayerDataForm extends LitElement {
             .class="${btnCls}"
             type="submit"
             value="${label.toLocaleLowerCase()}">
-            ${label} player
+            ${label} <span class="sr-only">player</span>
           </button>
+          ${(this.edit === true)
+            ? html`
+              <button
+              .class="${btnCls}"
+              type="button"
+              value="delete"
+              @click=${this.deleteHandler}>
+              Delete <span class="sr-only">player</span>
+            </button>`
+            : ''
+          }
         </div>
       </form>`;
   }

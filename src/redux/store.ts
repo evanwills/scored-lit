@@ -1,5 +1,7 @@
 import {
+  AnyAction,
   configureStore,
+  Reducer,
   // PayloadAction,
 } from '@reduxjs/toolkit';
 // import { TScoredStore } from '../types/game-data.d';
@@ -14,6 +16,7 @@ import { currentGameMiddleware } from './currentGame/current-middleware';
 import { pastGameMiddleware } from './pastGames/past-middleware';
 import { logger } from './redux-utils';
 import { appStateReducer } from './app-state';
+import { persistStore } from './persistStore';
 // import { persistStore, persistReducer } from 'redux-persist'
 // import { TScoredStore } from '../types/game-data';
 // import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
@@ -25,6 +28,8 @@ import { appStateReducer } from './app-state';
 //   players: [],
 //   teams: [],
 // };
+
+const lastAction : Reducer = (_state : string, action : AnyAction) : string => action.type;
 
 /**
  * Redux Persist
@@ -47,6 +52,7 @@ export const store = configureStore({
     players: playersReducer,
     teams: teamsReducer,
     appState: appStateReducer,
+    lastAction,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(
     currentGameMiddleware,
@@ -60,7 +66,7 @@ export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 
-
+store.subscribe(persistStore(store));
 
 document.addEventListener( // @ts-ignore
   'reduxaction', (event: Event) => {

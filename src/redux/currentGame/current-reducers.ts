@@ -372,14 +372,14 @@ export const updateScoreReducer : Reducer = (
 
 export const currentGameDefaultReducer : Reducer = (
   state : TGameData,
-  action: AnyAction
+  // action: AnyAction
 ) : TGameData => {
-  console.group('currentGameDefaultReducer()');
-  console.log('state:', state);
-  console.log('action:', action);
-  console.log('action.type:', action.type);
-  console.log('action.payload:', action.payload);
-  console.groupEnd();
+  // console.group('currentGameDefaultReducer()');
+  // console.log('state:', state);
+  // console.log('action:', action);
+  // console.log('action.type:', action.type);
+  // console.log('action.payload:', action.payload);
+  // console.groupEnd();
   return state;
 }
 

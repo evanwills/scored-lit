@@ -2,7 +2,6 @@ import { html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { TGameType, TGameTypes } from '../../types/custom-redux-types';
 import { EGameStates, TGameData } from '../../types/game-data.d'
-import './select-type';
 import { IIndividualPlayer, ITeam } from '../../types/players';
 import { inputHasValue } from '../../type-guards';
 import { sendToStore } from '../../redux/redux-utils';
@@ -13,6 +12,8 @@ import {
   // setGameMode,
 } from '../../redux/currentGame/current-actions';
 import { EAppStates, setAppState } from '../../redux/app-state';
+import './select-type';
+import './select-players';
 // import { getEpre } from '../../utils/general-utils';
 
 // const ePre = getEpre('current-game');
@@ -173,6 +174,9 @@ export class CurrentGame extends LitElement {
           }
         </p>`;
     }
+
+    console.log('this.data.mode:', this.data.mode);
+    console.log('EGameStates.ADD_PLAYERS:', EGameStates.ADD_PLAYERS);
 
     if (this.data.mode === EGameStates.ADD_PLAYERS) {
       return html`
