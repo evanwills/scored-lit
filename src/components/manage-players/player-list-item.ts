@@ -2,7 +2,7 @@ import { css, html, LitElement } from 'lit';
 import {
   customElement,
   property,
-  // state,
+  state,
   // state,
 } from 'lit/decorators.js';
 // import { renderNameField } from './pure-player-list-renderers';
@@ -37,6 +37,9 @@ export class PlayerListItem extends LitElement {
   //  END:  props
   // ------------------------------------------------------
   // START: state
+
+  @state()
+  displayName : string = '';
 
   private details : HTMLDetailsElement|null = null;
   private summary : HTMLElement|null = null;
@@ -80,6 +83,15 @@ export class PlayerListItem extends LitElement {
       }
     }
   }
+  updateName(event: CustomEvent) {
+    console.group('updateName()');
+    console.log('this.displayName (before):', this.displayName);
+    console.log('event.detail.givenName', event.detail.givenName);
+    console.log('event.detail.familyName', event.detail.familyName);
+    this.displayName = `${event.detail.givenName} ${event.detail.familyName} `;
+    this.requestUpdate();
+    console.log('this.displayName (after):', this.displayName);
+  }
 
   //  END:  event handlers
   // ------------------------------------------------------
@@ -90,23 +102,26 @@ export class PlayerListItem extends LitElement {
     console.log('this.familyName:', this.familyName);
     console.log('this.playerID:', this.playerID);
     console.log('this.normalisedNames:', this.normalisedNames);
-    const name = `${this.givenName} ${this.familyName}`;
+    if (this.displayName === '') {
+      this.displayName = `${this.givenName} ${this.familyName}`;
+    }
     return html`
-    <li class="list-item">
-      <details id="${this.detailsID()}">
+      <details id="${this.detailsID()}" name="player-list">
         <summary>
-          <span class="sr-only">Edit</span> ${name}
+          <span class="sr-only">Edit</span> ${this.displayName}
         </summary>
 
-        <player-data-form
-          edit
-          family-name="${this.familyName}"
-          given-name="${this.givenName}"
-          player-id="${this.playerID}"
-          normalised-names=${this.normalisedNames}
-          @reduxaction=${this.closeDetails}></player-data-form>
-      </details>
-    </li>`;
+        <div>
+          <player-data-form
+            edit
+            family-name="${this.familyName}"
+            given-name="${this.givenName}"
+            player-id="${this.playerID}"
+            normalised-names=${this.normalisedNames}
+            @reduxaction=${this.closeDetails}
+            @updated=${this.updateName}></player-data-form>
+        </div>
+      </details>`;
   }
 
   //  END:  main render method
@@ -117,15 +132,31 @@ export class PlayerListItem extends LitElement {
     h2 { margin-bottom: 0.5rem; }
     p { margin-top: 0;}
     ul {
-      margin: 0;
-      padding: 0;
-      list-style-type: none;
     }
     li {
-      margin: 0;
-      padding: 0;
+      border-top: 0.05rem solid #ddd;
       display: flex;
       flex-wrap: wrap;
+      margin: 0;
+      padding: 0.25rem 0;
+    }
+    details {
+      inline-size: 100%;
+      /* block-size: 1.5rem; */
+      /* transition: block-size ease-in-out 0.3s; */
+    }
+    /*
+    details:open {
+      block-size: auto;
+      block-size: calc-size(auto);
+    }
+    */
+    summary {
+      cursor: pointer;
+    }
+    div {
+      block-size: auto;
+      transition: all 0.3s ease-in-out;
     }
     .field-wrap {
       border-top: 0.05rem solid #fff
@@ -137,7 +168,7 @@ export class PlayerListItem extends LitElement {
     }
     .field-item label {
       display: inline-block;
-      width: 6.5rem;
+      inline-size: 6.5rem;
     }
     .field-item label::after {
       content: ':';
@@ -147,6 +178,7 @@ export class PlayerListItem extends LitElement {
     }
     .list-item {
       display: flex;
+      border-top: rgba(255,255,255,5);
     }
     .list-item label {
       flex-grow: 1;

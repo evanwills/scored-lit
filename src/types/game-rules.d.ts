@@ -1,24 +1,25 @@
+import { UID } from './base-types';
 import { TGameScoreCard, TScoreCard } from './score-card'
 
 export type TCall = {
-  id: string,
+  id: UID,
   name: string,
   score: number,
   tricks: number,
 }
 
 export interface TLead extends TCall {
-  id: string,
+  id: UID,
   name: string,
   score: number,
   tricks: number,
-  playerID: string
+  playerID: UID
 }
 
 export type FHasWon = () => string;
-export type FUpdateScore = (playerID: string, score: number, round: number) => IScoreEntry;
+export type FUpdateScore = (playerID: UID, score: number, round: number) => IScoreEntry;
 
-export type FGetScore = (playerID: string) => number;
+export type FGetScore = (playerID: UID) => number;
 
 export interface IGameRuleData {
   /**
@@ -34,7 +35,7 @@ export interface IGameRuleData {
    *
    * @property
    */
-  id: string,
+  id: UID,
 
   /**
    * Some games are played so that the person with the lowest

@@ -1,4 +1,5 @@
 import { EAppStates } from '../redux/app-state';
+import { GMTtime, posInt, UID } from './base-types';
 import { IPlayer, IIndividualPlayer, TTeam } from './players';
 import { TScoreCard } from './score-card';
 
@@ -71,12 +72,12 @@ export enum EGameStates {
 };
 
 export type InitialGameData = {
-  end: string|null,
+  end: GMTtime|null,
   forced: boolean,
-  id: string,
+  id: UID,
   lead: TGameLead|null,
   looser: string|null,
-  start: string,
+  start: GMTtime,
   winner: string|null,
 }
 
@@ -87,7 +88,7 @@ export type TGameData = {
   /**
    * @property ISO 8601 date-time string for when the game ended
    */
-  end: string|null,
+  end: GMTtime|null,
 
   /**
    * Whether or not the game was force finished.
@@ -101,7 +102,7 @@ export type TGameData = {
   /**
    * @property Unique ID for this game
    */
-  id: string,
+  id: UID,
 
   lead: TGameLead|null,
 
@@ -149,7 +150,7 @@ export type TGameData = {
    *
    * @property
    */
-  start: string,
+  start: GMTtime,
 
   /**
    * @property Whether or not the players are actually teams
@@ -159,7 +160,7 @@ export type TGameData = {
   /**
    * @property The type ID of game this score is for
    */
-  type: string,
+  type: UID,
 
   /**
    * @property ID of the winning player or team
@@ -196,6 +197,9 @@ export type TScoredStore = {
    */
   pastGames: Array<TGameData>,
 
+  // joinPlayerGame: Array<TJoinPlayerGame>,
+  // joinPlayerTeam: Array<TJoinPlayerTeam>,
+
   /**
    * @property List of all players who have ever played a game
    *           scored by this app
@@ -211,17 +215,36 @@ export type TScoredStore = {
 
 export type TWinnerLooser = {
   high: {
-    id: string,
+    id: UID,
     score: number,
   },
   low: {
-    id: string,
+    id: UID,
     score: number,
   },
 };
 
-export type TActionPayloadNewGame = { id: string, start: string };
-export type TActionPayloadGameMode = { mode: EGameStates, start: string };
-export type TActionPayloadGameLead = { id: string, call: number, suit: string };
-export type TActionPayloadGameSetScore = { id: string, score: number };
-export type TActionPayloadGameUpdateScore = {id: string, round: number, score: number };
+export type TJoinPlayerGame = {
+  /**
+   * @property UID of the past game this item is joining
+   */
+  pastGameID: UID,
+  gameTypeID: UID,
+  playerID: UID,
+  isTeam: boolean,
+  timestamp: GMTtime,
+  rank: posInt,
+  score: number,
+};
+
+export type TJoinPlayerTeam = {
+  teamID: UID,
+  playerID: UID,
+  order: posInt,
+}
+
+export type TActionPayloadNewGame = { id: UID, start: GMTtime };
+export type TActionPayloadGameMode = { mode: EGameStates, start: GMTtime };
+export type TActionPayloadGameLead = { id: UID, call: number, suit: string };
+export type TActionPayloadGameSetScore = { id: UID, score: number };
+export type TActionPayloadGameUpdateScore = {id: UID, round: number, score: number };

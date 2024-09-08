@@ -64,6 +64,12 @@ export class ScoreCards extends connect(store)(LitElement) {
   appState: EAppStates = EAppStates.game;
 
   @state()
+  darkMode: boolean|null = null;
+
+  @state()
+  fontSizeAdjust: number = 0;
+
+  @state()
   firstTime: boolean = true;
 
   private navDialog : HTMLDialogElement|null = null;
@@ -87,6 +93,8 @@ export class ScoreCards extends connect(store)(LitElement) {
     this.pastGames = state.pastGames;
     this.gameTypes = state.gameTypes;
     this.players = state.players;
+    // this.joinPlayerGame = [];
+    // this.joinPlayerTeam = [];
     this.teams = state.teams;
     this.appState = state.appState;
 
@@ -226,6 +234,17 @@ export class ScoreCards extends connect(store)(LitElement) {
               <div class="nav-wrap">
                 <ul class="nav-menu-list">
                   ${routes.map((route) => this.renderNavLink(route))}
+                  <li>
+                    <button type="button">
+                      ${(this.darkMode === true) ? 'Light' : 'Dark'}
+                      mode
+                    </button>
+                  </li>
+                  <li>
+                    Font size
+                    <button type="button" value="1">+</button>
+                    <button type="button" value="-1">-</button>
+                  </li>
                 </ul>
                 <button
                   class="menu-toggle menu-toggle--close"

@@ -1,17 +1,19 @@
+import { UID } from "./base-types";
+
 export interface IPlayer {
-  id: string,
+  id: UID,
   name: string,
   normalisedName: string,
 }
 
 export interface IIndividualPlayer extends IPlayer {
-  id: string,
+  id: UID,
   name: string,
   secondName: string,
 };
 
 export interface ITeam extends IPlayer {
-  id: string,
+  id: UID,
   name: string,
   members: Array<string>,
 };

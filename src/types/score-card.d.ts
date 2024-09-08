@@ -1,22 +1,24 @@
+import { GMTtime } from "./base-types";
+
 export interface IScoreEntry {
-  time: string,
   call: string|null,
   score: number,
   success: boolean|null,
+  time: GMTtime,
 }
 
 export interface IScoreEntryStandard {
   call: null,
   score: number,
   success: null,
-  time: string,
+  time: GMTtime,
 }
 
 export interface IScoreEntryTrick {
   call: string|null,
   score: number,
   success: boolean|null,
-  time: string,
+  time: GMTtime,
 }
 
 export type TScoreCard = {

@@ -128,12 +128,13 @@ export class PlayerList extends LitElement {
     const playerList = (this.filteredPlayers.length > 0)
       ? html`
         <ul class="list-wrap">
-          ${this.filteredPlayers.map((player) => html`<player-list-item
-            given-name="${player.name}"
-            family-name="${player.secondName}"
-            normalised-names=${this._normalisedNames}
-            player-id="${player.id}"
-            ></player-list-item>`)}
+            ${this.filteredPlayers.map((player) => html`
+          <li class="list-item"><player-list-item
+              given-name="${player.name}"
+              family-name="${player.secondName}"
+              normalised-names=${this._normalisedNames}
+              player-id="${player.id}"></player-list-item>
+          </li>`)}
         </ul>`
       : renderNoPlayers(
         this.players,
@@ -149,9 +150,7 @@ export class PlayerList extends LitElement {
           this.handleFilterKeyUp,
         )}
       </header>
-      <main >
-        ${playerList}
-      </main>
+      ${playerList}
       <footer>
         <player-data-form
           normalised-names=${this._normalisedNames}></player-data-form>
@@ -174,8 +173,6 @@ export class PlayerList extends LitElement {
     li {
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-wrap: wrap;
     }
     .field-wrap {
       border-top: 0.05rem solid #fff
@@ -195,8 +192,12 @@ export class PlayerList extends LitElement {
     .field-item input {
       flex-grow: 1;
     }
+    .list-wrap {
+      border-top: 0.05rem solid #999;
+    }
     .list-item {
-      display: flex;
+      padding: 0.25rem 0;
+      border-bottom: 0.05rem solid #999;
     }
     .list-item label {
       flex-grow: 1;

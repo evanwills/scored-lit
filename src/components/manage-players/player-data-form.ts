@@ -122,6 +122,7 @@ export class PlayerDataForm extends LitElement {
               normalisedName,
             }),
           );
+          this.dispatchEvent(new CustomEvent('updated', { detail: { givenName: this._givenName, familyName: this._familyName, }}))
         } else {
           warningMsg = 'Name is unchanged (No point in submitting)';
         }
@@ -184,33 +185,42 @@ export class PlayerDataForm extends LitElement {
       <form
         action=""
         aria-labeldby="${labelBy}"
+        class="${this.edit === true ? 'edit-mode' : ''}"
         method="post"
         @submit=${this.submitHandler}>
         <div
           arial-labeldby="${labelBy}"
           aria-describedby="${ifDefined(descByID)}"
           role="group">
-          <h2 id="${labelBy}">${heading}</h2>
+          ${(this.edit === false)
+            ? html`<h2 id="${labelBy}">${heading}</h2>`
+            : html`<h3 id="${labelBy}">${heading}</h3>`
+          }
 
           <ul class="field-wrap">
-            ${renderNameField(
-              this.playerID,
-              'Given',
-              this._givenName,
-              this.givenName,
-              'Gabbie',
-              this._isDupe,
-              this.keyupHandler,
-            )}
-            ${renderNameField(
-              this.playerID,
-              'Family',
-              this._familyName,
-              this.familyName,
-              'Augustus',
-              this._isDupe,
-              this.keyupHandler,
-            )}
+            <li class="list-item">
+              ${renderNameField(
+                this.playerID,
+                'Given',
+                this._givenName,
+                this.givenName,
+                'Gabbie',
+                this._isDupe,
+                this.keyupHandler,
+              )}
+            </li>
+
+            <li class="list-item">
+              ${renderNameField(
+                this.playerID,
+                'Family',
+                this._familyName,
+                this.familyName,
+                'Augustus',
+                this._isDupe,
+                this.keyupHandler,
+              )}
+            </li>
           </ul>
 
           ${(this._isDupe === true)
@@ -227,23 +237,25 @@ export class PlayerDataForm extends LitElement {
             : ''
           }
 
-          <button
-            .class="${btnCls}"
-            type="submit"
-            value="${label.toLocaleLowerCase()}">
-            ${label} <span class="sr-only">player</span>
-          </button>
-          ${(this.edit === true)
-            ? html`
-              <button
+          <p>
+            <button
               .class="${btnCls}"
-              type="button"
-              value="delete"
-              @click=${this.deleteHandler}>
-              Delete <span class="sr-only">player</span>
-            </button>`
-            : ''
-          }
+              type="submit"
+              value="${label.toLocaleLowerCase()}">
+              ${label} <span class="sr-only">player</span>
+            </button>
+            ${(this.edit === true)
+              ? html`
+                <button
+                .class="${btnCls}"
+                type="button"
+                value="delete"
+                @click=${this.deleteHandler}>
+                Delete <span class="sr-only">player</span>
+              </button>`
+              : ''
+            }
+          </p>
         </div>
       </form>`;
   }
@@ -253,7 +265,7 @@ export class PlayerDataForm extends LitElement {
   // START: styles
 
   static styles = css`
-    h2 { margin-bottom: 0.5rem; }
+    h2, h3 { margin: 0.5rem 0; }
     p { margin-top: 0;}
     ul {
       margin: 0;
@@ -266,11 +278,17 @@ export class PlayerDataForm extends LitElement {
       display: flex;
       flex-wrap: wrap;
     }
+    p { margin: 0.5rem 0 0; }
+    .edit-mode {
+      margin-bottom: 0.75rem;
+    }
     .field-wrap {
-      border-top: 0.05rem solid #fff
+      border-top: 0.05rem solid #555;
+      margin: 0;
+      padding: 0;
     }
     .field-item {
-      border-bottom: 0.05rem solid #fff;
+      border-bottom: 0.05rem solid #555;
       padding-bottom: 0.5rem;;
       padding-top: 0.5rem;
     }
