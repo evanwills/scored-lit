@@ -1,21 +1,22 @@
 import { html, TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { IIndividualPlayer, IIndividualPlayerFilterable } from '../../types/players';
+import { IIndividualPlayer } from '../../types/players';
 import './player-data-form';
 
 export const renderFilterInput = (
-  players : IIndividualPlayerFilterable[],
+  userCount : number,
+  type: string,
   handler : Function,
 ) : TemplateResult|string => {
-  if (players.length > 5) {
+  if (userCount > 5) {
     return html`
     <p>
-      <label for="player-filter">Filter:</label>
+      <label for="${type}-filter">Filter:</label>
       <input
-        id="player-filter"
+        id="${type}-filter"
         type="search"
-        placeholder="enter players name"
+        placeholder="Enter ${type}'s name"
         @keyup=${handler}  />
     </p>`
   }
@@ -37,7 +38,7 @@ export const renderFilterInput = (
  * @returns HTML for player list item
  */
 export const renderPlayerItem = (
-  player: IIndividualPlayerFilterable,
+  player: IIndividualPlayer,
   normalisedNames: string[],
 ) : TemplateResult|string => {
   // const label = (selecting === true)
@@ -61,7 +62,7 @@ export const renderPlayerItem = (
 };
 
 export const renderPlayersList = (
-  players : IIndividualPlayerFilterable[],
+  players : IIndividualPlayer[],
   normalisedNames: string[],
 ) : TemplateResult => html`
     <ul class="list-wrap">
@@ -73,17 +74,18 @@ export const renderPlayersList = (
     </ul>`;
 
 export const renderNoPlayers = (
-  players : IIndividualPlayer[],
-  filteredPlayers : IIndividualPlayerFilterable[],
+  userCount : number,
+  filterCount : number,
   filterStr : string,
+  filterType : string,
 ) : TemplateResult|string => {
-  if (players.length === 0) {
+  if (userCount === 0) {
     return html`
-      <p>There are no players registered. Please add some players</p>`;
+      <p>There are no ${filterType}s registered. Please add some ${filterType}s</p>`;
   }
 
-  if (filteredPlayers.length === 0 && filterStr.trim() !== '') {
-    return html`<p>No players were matched using "${filterStr}"</p>`;
+  if (filterCount === 0 && filterStr.trim() !== '') {
+    return html`<p>No ${filterType}s were matched using "${filterStr}"</p>`;
   }
   return '';
 };

@@ -23,6 +23,7 @@ const getRule = (preBuilt : IGameRules) : IGameRuleData => ({
   requiresTeam: preBuilt.requiresTeam,
   requiresCall: preBuilt.requiresCall,
   rules: preBuilt.rules,
+  teams: preBuilt.teams,
 });
 
 const initialState : Array<IGameRuleData> = [

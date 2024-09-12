@@ -118,6 +118,13 @@ export interface IGameRuleData {
    * @property
    */
   rules: string,
+
+  /**
+   * Whether or not this game requires teams.
+   *
+   * @property
+   */
+  teams: boolean,
 }
 
 export interface IGameRules extends IGameRuleData {

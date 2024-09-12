@@ -9,11 +9,15 @@ export interface IPlayer {
 export interface IIndividualPlayer extends IPlayer {
   id: UID,
   name: string,
+  normalisedName: string,
   secondName: string,
 };
 
 export interface ITeam extends IPlayer {
   id: UID,
   name: string,
+  normalisedName: string,
   members: Array<string>,
 };
+
+export type TPlayerList = Array<IIndividualPlayer|ITeam>;

@@ -38,6 +38,7 @@ export class AnyTeam implements IGameRules {
   readonly requiresCall: boolean = false;
   readonly requiresTeam: boolean = true;
   readonly rules: string = '';
+  readonly teams: boolean = true;
 
   //  END:  public property declarations
   // ----------------------------------------------------------------
@@ -53,6 +54,19 @@ export class AnyTeam implements IGameRules {
       total: 0,
       position: 0,
     }));
+    this.id = 'any-team'
+    this.lowestWins = false;
+    this.name = 'Any (teams)';
+    this.maxPlayers = null;
+    this.maxScore = null;
+    this.minPlayers = 2;
+    this.minScore = null;
+    this.callToWin = false;
+    this.possibleCalls = [];
+    this.requiresCall = false;
+    this.requiresTeam = true;
+    this.rules = '';
+    this.teams = true;
     this.gameOver = () => this._gameOver;
   }
 

@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import { EGameStates, InitialGameData, TGameData } from "../types/game-data";
 import { FEpre } from "../types/general";
+import { IGameRuleData, IGameRules } from "../types/game-rules";
 /**
  * Get the sum of all the scores up to and including the round being
  * rendered.
@@ -72,7 +73,19 @@ export const getIdAndStart = () : InitialGameData => ({
   winner: null,
 });
 
-export const getNewGame = (type: string, mode: EGameStates) : TGameData => {
+export const getNewGame = (gameTypes: IGameRuleData[], type: string, mode: EGameStates) : TGameData => {
+  const gameType : IGameRuleData|undefined = gameTypes.find((game) => game.id === type);
+  const teams = (typeof gameType !== 'undefined')
+    ? gameType.teams
+    : false;
+
+
+  console.group('getNewGame()');
+  console.log('gameTypes:', gameTypes);
+  console.log('gameType:', gameType);
+  console.log('teams:', teams);
+  console.groupEnd();
+
   return {
     ...getIdAndStart(),
     forced: false,
@@ -81,7 +94,7 @@ export const getNewGame = (type: string, mode: EGameStates) : TGameData => {
     mode,
     players: [],
     scores: [],
-    teams: false,
+    teams,
     type,
     winner: null,
   };

@@ -13,14 +13,10 @@ import { inputHasValue, linkHasHref } from './type-guards';
 // import { getEpre } from './utils/general-utils';
 import './components/current-game/game';
 import './components/manage-players/player-list';
+import './components/manage-teams/teams-list';
+import './components/app-header'
 
 // const ePre = getEpre('scored');
-const routes : TAppRoute[] = [
-  { anchor: 'game', label: 'Keep score', icon: '' },
-  { anchor: 'players', label: 'Manage players', icon: '' },
-  { anchor: 'teams', label: 'Manage teams', icon: '' },
-  { anchor: 'pastGames', label: 'View past games', icon: '' },
-]
 
 /**
  * An example element.
@@ -201,7 +197,12 @@ export class ScoreCards extends connect(store)(LitElement) {
       case EAppStates.players:
         return html`<players-list
           .players=${this.players}
-          .teams=${this.teams}></players-list>`
+          .teams=${this.teams}></players-list>`;
+
+      case EAppStates.teams:
+        return html`<teams-list
+          .players=${this.players}
+          .teams=${this.teams}></teams-list>`;
 
       default:
         return '';
@@ -217,47 +218,7 @@ export class ScoreCards extends connect(store)(LitElement) {
 
     return html`
       <div class="score-card">
-        <header>
-          <h1>Scored</h1>
-          <p>Keep score for your favourite games</p>
-          <nav>
-            <button
-              class="menu-toggle menu-toggle--open"
-              id="open-menu"
-              type="button"
-              value="open"
-              @click=${this.handleNavBtnClick}>
-              Open Menu
-            </button>
-            <dialog id="nav-menu">
-              <label for="close-menu" class="close-menu-background">Close menu</label>
-              <div class="nav-wrap">
-                <ul class="nav-menu-list">
-                  ${routes.map((route) => this.renderNavLink(route))}
-                  <li>
-                    <button type="button">
-                      ${(this.darkMode === true) ? 'Light' : 'Dark'}
-                      mode
-                    </button>
-                  </li>
-                  <li>
-                    Font size
-                    <button type="button" value="1">+</button>
-                    <button type="button" value="-1">-</button>
-                  </li>
-                </ul>
-                <button
-                  class="menu-toggle menu-toggle--close"
-                  type="button"
-                  value="close"
-                  id="close-menu"
-                  @click=${this.handleNavBtnClick}>
-                  Close Menu
-                </button>
-              </div>
-            </dialog>
-          </nav>
-        </header>
+        <app-header></app-header>
         <main>
           ${this.renderView()}
         </main>
@@ -273,126 +234,16 @@ export class ScoreCards extends connect(store)(LitElement) {
     .score-card {
       border: 0.05rem solid #fff;
       border-radius: 0.3rem;
-      padding: 0.5rem 1.5rem 0.75rem;
+      padding: 1em 1.5rem 1.5rem;
       position: relative;
-    }
-    h1 {
-      margin: 0 0 .25rem;
     }
     p {
-      margin: 0 0 1rem;
-    }
-    .score-card *:last-child:not(dialog, a) {
-      margin-bottom: 0.5rem;
-    }
-    .score-card nav {
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
-    .score-card dialog {
-      box-sizing: border-box;
-      position: relative;
-      border: 0.05rem solid #fff;
-      padding: 1rem 0;
-      border-radius: 0.3rem;
-    }
-    .score-card dialog::backdrop {
-      background-color: rgba(0, 0, 0, 0.8);
-    }
-    .score-card .menu-toggle {
-      background-color: transparent;
-      border-color: #fff;
-      border-bottom-left-radius: 0.3rem;
-      border-right: none;
-      border-top: none;
-      display: block;
-      height: 2rem;
-      line-height: 5rem;
-      overflow: hidden;
-      position: absolute;
-      right: 0;
-      width: 2rem;
-    }
-    .score-card .menu-toggle:hover {
-      cursor: pointer;
-    }
-    .score-card .menu-toggle::before,
-    .score-card .menu-toggle::after {
-      border-color: #fff;
-      border-style: solid;
-      border-left: none;
-      border-right: none;
-      content: '';
-      display: block;
-      position: absolute;
-      right: 50%;
-      text-indent: 0.1rem;
-      top: 50%;
-      width: 1rem;
-      transform: translate(50%, -50%);
-    }
-    .score-card .menu-toggle--open {
-      top: 0;
-    }
-    .score-card .menu-toggle--open::before {
-      border-bottom-width: 0.1rem;
-      border-top-width: 0.1rem;
-      height: 0.75rem;
-    }
-    .score-card .menu-toggle--open::after {
-      border-top-width: 0.1rem;
-      border-bottom: none;
-      height: 0.1rem;
-      margin-top: 0.05rem;
-    }
-    .score-card .menu-toggle--close {
-      top: -1rem;
-    }
-    .score-card .menu-toggle--close::before,
-    .score-card .menu-toggle--close::after {
-      border-top-width: 0.1rem;
-      border-bottom: none;
-      content: '';
-      display: block;
-      position: absolute;
-      right: 50%;
-      text-indent: 0.1rem;
-      top: 50%;
-      width: 1rem;
-    }
-    .score-card .menu-toggle--close::before {
-      transform: translate(50%, -50%) rotate(-45deg);
-    }
-    .score-card .menu-toggle--close::after {
-      transform: translate(50%, -50%) rotate(45deg);
-    }
-    .nav-menu-list {
-      margin: 0;
-      padding: 0;
-      list-style-type: none;
-    }
-    .nav-menu-list li {
-      margin: 0;
-      padding: 0;
-    }
-    .nav-menu-list a {
-      display: block;
-      width: 100%;
-      padding: 0.4rem 1rem;
       margin: 0;
     }
-    .nav-wrap {
-      position: relative;
-      z-index: 1;
-    }
-    .close-menu-background {
-      bottom: 0;
-      color: transparent;
-      left: 0;
-      position: fixed;
-      right: 0;
-      top: 0;
+    @media screen and (max-width: 20rem) {
+      .score-card {
+        padding: 0.6rem 1rem 1rem;
+      }
     }
   `
 

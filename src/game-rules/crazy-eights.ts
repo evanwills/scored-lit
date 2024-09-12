@@ -33,6 +33,7 @@ export class CrazyEights implements IGameRules {
   readonly requiresCall: boolean = false;
   readonly requiresTeam: boolean = false;
   readonly rules: string = '';
+  readonly teams: boolean = false;
 
   //  END:  public property declarations
   // ----------------------------------------------------------------
@@ -48,6 +49,19 @@ export class CrazyEights implements IGameRules {
       total: 0,
       position: 0,
     }));
+    this.id = 'crazy-eights';
+    this.lowestWins = true;
+    this.name = 'Crazy Eights';
+    this.maxPlayers = 0;
+    this.maxScore = 100;
+    this.minPlayers = 2;
+    this.minScore = null;
+    this.callToWin = false;
+    this.possibleCalls = [];
+    this.requiresCall = false;
+    this.requiresTeam = false;
+    this.rules = '';
+    this.teams = false;
     this.gameOver = () => this._gameOver;
   }
 

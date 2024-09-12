@@ -1,4 +1,4 @@
-import { html, LitElement } from 'lit';
+import { html, LitElement, TemplateResult } from 'lit';
 import {
   customElement,
   property,
@@ -9,22 +9,23 @@ import { inputHasValue } from '../../type-guards';
 import { normaliseName } from '../../utils/general-utils';
 // import { sendToStore } from '../../redux/redux-utils';
 // import { addNewPlayerAction, updatePlayerAction } from '../../redux/players/players-actions';
-// import { getEpre } from '../../utils/general-utils';
+import { getEpre } from '../../utils/general-utils';
 // import { nanoid } from 'nanoid';
 import {
   renderFilterInput,
   renderNoPlayers,
-  // renderPlayerForm,
-} from './pure-player-list-renderers';
-import { getFilterPlayersByName } from '../../utils/player-utils';
-import './player-list-item';
-import './player-data-form';
+//   renderPlayerForm,
+} from '../manage-players/pure-player-list-renderers';
+// import './player-list-item';
+// import './player-data-form';
 import manageUser from '../../assets/css/manage-user.css';
+import { getFilterPlayersByName } from '../../utils/player-utils';
 
-// const ePre = getEpre('players-list');
 
-@customElement('players-list')
-export class PlayerList extends LitElement {
+const ePre = getEpre('players-list');
+
+@customElement('teams-list')
+export class TeamsList extends LitElement {
   // ------------------------------------------------------
   // START: props
 
@@ -48,7 +49,7 @@ export class PlayerList extends LitElement {
   rawFilter: string = '';
 
   @state()
-  filteredPlayers: IIndividualPlayer[] = [];
+  filteredTeams: ITeam[] = [];
 
   @state()
   _normalisedNames : string[] = [];
@@ -73,17 +74,24 @@ export class PlayerList extends LitElement {
   // ------------------------------------------------------
   // START: helper methods
 
-  prepareAllPlayers() {
-    if (this.players.length !== this._normalisedNames.length) {
-      this.filteredPlayers = [...this.players];
-      this._normalisedNames = this.players.map((player) => player.normalisedName);
+  prepareAllTeams() {
+    if (this.teams.length !== this._normalisedNames.length) {
+      console.group(ePre('prepareAllTeams'));
+      console.log('this.players:', this.players)
+      console.log('this.teams:', this.teams)
+      console.log('this.filteredTeams (before):', this.filteredTeams)
+      this.filteredTeams = [...this.teams];
+      this._normalisedNames = this.teams.map((team) => team.normalisedName);
+      console.log('this.filteredTeams (after):', this.filteredTeams)
+      console.log('this._normalisedNames (after):', this._normalisedNames)
+      console.groupEnd();
     }
   }
 
-  setFilteredPlayers() {
-    this.filteredPlayers = (this.filterStr === '')
-        ? [...this.players]
-        : this.players.filter(getFilterPlayersByName(this.filterStr));
+  setFilteredTeams() {
+    this.filteredTeams = (this.filterStr === '')
+        ? [...this.teams]
+        : this.teams.filter(getFilterPlayersByName(this.filterStr));
   }
 
   //  END:  helper methods
@@ -97,7 +105,7 @@ export class PlayerList extends LitElement {
     ) {
       this.rawFilter = event.target.value;
       this.filterStr = normaliseName(event.target.value);
-      this.setFilteredPlayers();
+      this.setFilteredTeams();
     }
   }
 
@@ -105,34 +113,35 @@ export class PlayerList extends LitElement {
   // ------------------------------------------------------
   // START: main render method
 
-  render() {
-    this.prepareAllPlayers();
-    console.log('Array.isArray(this.filteredPlayers[0]):', Array.isArray(this.filteredPlayers[0]));
-    console.log('this.filteredPlayers[0]:', this.filteredPlayers[0]);
+  render() : TemplateResult {
+    this.prepareAllTeams();
+    console.log('Array.isArray(this.filteredTeams[0]):', Array.isArray(this.filteredTeams[0]));
+    console.log('this.filteredTeams[0]:', this.filteredTeams[0]);
 
-    const playerList = (this.filteredPlayers.length > 0)
+    const playerList : TemplateResult|string = (this.filteredTeams.length > 0)
       ? html`
         <ul class="list-wrap">
-            ${this.filteredPlayers.map((player) => html`
-          <li class="list-item"><player-list-item
-              given-name="${player.name}"
-              family-name="${player.secondName}"
+            ${this.filteredTeams.map((player) => html`
+          <li class="list-item"><team-list-item
+              teamname="${player.name}"
+              members="${player.secondName}"
               normalised-names=${this._normalisedNames}
-              player-id="${player.id}"></player-list-item>
+              player-id="${player.id}"></team-list-item>
           </li>`)}
         </ul>`
       : renderNoPlayers(
-        this.players.length,
-        this.filteredPlayers.length,
+        this.teams.length,
+        this.filteredTeams.length,
         this.rawFilter,
-        'player'
+        'team'
       );
 
     return html`<section>
       <header>
-        <h2>Players</h2>
+        <h2>Teams</h2>
         ${renderFilterInput(
-          this.players,
+          this.teams.length,
+          'team',
           this.handleFilterKeyUp,
         )}
       </header>
@@ -156,6 +165,6 @@ export class PlayerList extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'players-list': PlayerList,
+    'teams-list': TeamsList,
   }
 }

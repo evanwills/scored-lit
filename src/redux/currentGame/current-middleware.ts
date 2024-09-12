@@ -47,9 +47,11 @@ export const currentGameMiddleware : Middleware = (store) => (next: Dispatch) =>
     case currentGameActions.ADD_NEW_GAME:
       console.groupEnd();
       if (typeof action.payload === 'string') {
+        console.log('state:', state);
         return next({
           type: currentGameActions.SET_NEW,
           payload: getNewGame(
+            state.gameTypes,
             action.payload,
             EGameStates.ADD_PLAYERS),
         });

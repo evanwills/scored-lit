@@ -33,6 +33,7 @@ export class AnyIndividual implements IGameRules {
   readonly requiresCall: boolean = false;
   readonly requiresTeam: boolean = false;
   readonly rules: string = '';
+  readonly teams: boolean = false;
 
   //  END:  public property declarations
   // ----------------------------------------------------------------
@@ -48,6 +49,19 @@ export class AnyIndividual implements IGameRules {
       total: 0,
       position: 0,
     }));
+    this.id = 'any-individual'
+    this.lowestWins = false;
+    this.name = 'Non-Teams game';
+    this.maxPlayers = null;
+    this.maxScore = 10000;
+    this.minPlayers = 2;
+    this.minScore = null;
+    this.callToWin = false;
+    this.possibleCalls = [];
+    this.requiresCall = false;
+    this.requiresTeam = false;
+    this.rules = '';
+    this.teams = false;
     this.gameOver = () => this._gameOver;
   }
 

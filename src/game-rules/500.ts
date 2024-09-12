@@ -24,7 +24,7 @@ export const get500Score = (score: number, playerID: string, call: TLead) : ISco
     call: call.name,
     score: 0,
     success: null,
-    time: new Date().toISOString(),
+    time: Date.now(),
   }
 
   const isLead = (playerID === call.playerID);
@@ -56,6 +56,36 @@ export const get500Score = (score: number, playerID: string, call: TLead) : ISco
 
   return output;
 };
+
+const _possibleCalls : Array<TCall> = [
+  { id: '6S', name: 'Six spades', score: 40, tricks: 6 },
+  { id: '6C', name: 'Six clubs', score: 60, tricks: 6 },
+  { id: '6D', name: 'Six diamonds', score: 80, tricks: 6 },
+  { id: '6H', name: 'Six hearts', score: 100, tricks: 6 },
+  { id: '6NT', name: 'Six no trumps', score: 120, tricks: 6 },
+  { id: '7S', name: 'Seven spades', score: 140, tricks: 7 },
+  { id: '7C', name: 'Seven clubs', score: 160, tricks: 7 },
+  { id: '7D', name: 'Seven diamonds', score: 180, tricks: 7 },
+  { id: '7H', name: 'Seven hearts', score: 200, tricks: 7 },
+  { id: '7NT', name: 'Seven no trumps', score: 220, tricks: 7 },
+  { id: 'M', name: 'Misere', score: 250, tricks: 10 },
+  { id: '8S', name: 'Eight spades', score: 240, tricks: 8 },
+  { id: '8C', name: 'Eight clubs', score: 260, tricks: 8 },
+  { id: '8D', name: 'Eight diamonds', score: 280, tricks: 8 },
+  { id: '8H', name: 'Eight hearts', score: 300, tricks: 8 },
+  { id: '8NT', name: 'Eight no trumps', score: 320, tricks: 8 },
+  { id: '9S', name: 'Nine spades', score: 340, tricks: 9 },
+  { id: '9C', name: 'Nine clubs', score: 360, tricks: 9 },
+  { id: '9D', name: 'Nine diamonds', score: 380, tricks: 9 },
+  { id: '9H', name: 'Nine hearts', score: 400, tricks: 9 },
+  { id: '9NT', name: 'Nine no trumps', score: 420, tricks: 9 },
+  { id: '10S', name: 'Ten spades', score: 440, tricks: 10 },
+  { id: '10C', name: 'Ten clubs', score: 460, tricks: 10 },
+  { id: '10D', name: 'Ten diamonds', score: 480, tricks: 10 },
+  { id: '10H', name: 'Ten hearts', score: 500, tricks: 10 },
+  { id: '10NT', name: 'Ten no trumps', score: 520, tricks: 10 },
+  { id: 'OM', name: 'Open misere', score: 500, tricks: 10 },
+];
 
 /**
  * Get error message when lead has not been set for current hand
@@ -94,38 +124,11 @@ export class FiveHundred implements IGameRules {
   readonly minScore: number = -500;
   readonly name: string = '500';
   readonly callToWin: boolean = true;
-  readonly possibleCalls: Array<TCall> = [
-    { id: '6S', name: 'Six spades', score: 40, tricks: 6 },
-    { id: '6C', name: 'Six clubs', score: 60, tricks: 6 },
-    { id: '6D', name: 'Six diamonds', score: 80, tricks: 6 },
-    { id: '6H', name: 'Six hearts', score: 100, tricks: 6 },
-    { id: '6NT', name: 'Six no trumps', score: 120, tricks: 6 },
-    { id: '7S', name: 'Seven spades', score: 140, tricks: 7 },
-    { id: '7C', name: 'Seven clubs', score: 160, tricks: 7 },
-    { id: '7D', name: 'Seven diamonds', score: 180, tricks: 7 },
-    { id: '7H', name: 'Seven hearts', score: 200, tricks: 7 },
-    { id: '7NT', name: 'Seven no trumps', score: 220, tricks: 7 },
-    { id: 'M', name: 'Misere', score: 250, tricks: 10 },
-    { id: '8S', name: 'Eight spades', score: 240, tricks: 8 },
-    { id: '8C', name: 'Eight clubs', score: 260, tricks: 8 },
-    { id: '8D', name: 'Eight diamonds', score: 280, tricks: 8 },
-    { id: '8H', name: 'Eight hearts', score: 300, tricks: 8 },
-    { id: '8NT', name: 'Eight no trumps', score: 320, tricks: 8 },
-    { id: '9S', name: 'Nine spades', score: 340, tricks: 9 },
-    { id: '9C', name: 'Nine clubs', score: 360, tricks: 9 },
-    { id: '9D', name: 'Nine diamonds', score: 380, tricks: 9 },
-    { id: '9H', name: 'Nine hearts', score: 400, tricks: 9 },
-    { id: '9NT', name: 'Nine no trumps', score: 420, tricks: 9 },
-    { id: '10S', name: 'Ten spades', score: 440, tricks: 10 },
-    { id: '10C', name: 'Ten clubs', score: 460, tricks: 10 },
-    { id: '10D', name: 'Ten diamonds', score: 480, tricks: 10 },
-    { id: '10H', name: 'Ten hearts', score: 500, tricks: 10 },
-    { id: '10NT', name: 'Ten no trumps', score: 520, tricks: 10 },
-    { id: 'OM', name: 'Open misere', score: 500, tricks: 10 },
-  ];
+  readonly possibleCalls: Array<TCall> = _possibleCalls;
   readonly requiresCall: boolean = true;
   readonly requiresTeam: boolean = true;
   readonly rules: string = '';
+  readonly teams: boolean = true;
 
   //  END:  public property declarations
   // ----------------------------------------------------------------
@@ -141,6 +144,18 @@ export class FiveHundred implements IGameRules {
       total: 0,
       position: 0,
     }));
+    this.lowestWins = false;
+    this.maxPlayers = 2;
+    this.maxScore = 500;
+    this.minPlayers = 2;
+    this.minScore = -500;
+    this.name = '500';
+    this.callToWin = true;
+    this.possibleCalls = _possibleCalls;
+    this.requiresCall = true;
+    this.requiresTeam = true;
+    this.rules = '';
+    this.teams = true;
   }
 
   canPlay () : boolean {

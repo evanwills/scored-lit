@@ -36,7 +36,7 @@ export class CurrentGame extends LitElement {
     mode: EGameStates.SET_TYPE,
     players: [],
     scores: [],
-    start: '',
+    start: 0,
     teams: false,
     type: '',
     winner: null,
@@ -175,21 +175,25 @@ export class CurrentGame extends LitElement {
         </p>`;
     }
 
+    console.log('this.data:', this.data);
     console.log('this.data.mode:', this.data.mode);
+    console.log('this.data.teams:', this.data.teams);
     console.log('EGameStates.ADD_PLAYERS:', EGameStates.ADD_PLAYERS);
+    console.log('this.players:', this.players);
 
     if (this.data.mode === EGameStates.ADD_PLAYERS) {
       return html`
         <select-players
-          .all-players=${this.players}
-          .all-teams=${this.teams}
-          .selected-players=${this.data.players}
+          .allplayers=${this.players}
+          .allteams=${this.teams}
+          .selectedplayers=${this.data.players}
+          ?isteam=${this.data.teams}
           @setplayers=${this.dispatch}
           @addplayers=${this.dispatch}
           @addteam=${this.dispatch}
           @removeplayer=${this.dispatch}
           @removeteam=${this.dispatch}
-          ?use-teams=${this.data.teams}></select-players>
+          ?isteams=${this.data.teams}></select-players>
       `;
     }
 
