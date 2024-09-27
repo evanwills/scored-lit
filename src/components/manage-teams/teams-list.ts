@@ -11,7 +11,7 @@ import { normaliseName } from '../../utils/general-utils';
 // import { addnewTeamAction, updatePlayerAction } from '../../redux/players/players-actions';
 import { getEpre } from '../../utils/general-utils';
 // import { nanoid } from 'nanoid';
-import { getFilterPlayersByName } from '../../utils/player-utils';
+import { getFilterPlayersByName, getTeamByMemberCount } from '../../utils/player-utils';
 import {
   renderFilterInput,
   renderNoPlayers,
@@ -21,7 +21,7 @@ import {
 // import './player-data-form';
 import './team-data-form'
 import manageUser from '../../assets/css/manage-user.css';
-
+import './team-list-item';
 
 const ePre = getEpre('teams-list');
 
@@ -29,6 +29,12 @@ const ePre = getEpre('teams-list');
 export class TeamsList extends LitElement {
   // ------------------------------------------------------
   // START: props
+
+  @property({ type: Number })
+  max: number = 0;
+
+  @property({ type: Number })
+  min: number = 0;
 
   @property({ type: Array })
   players: IIndividualPlayer[] = [];
@@ -53,6 +59,9 @@ export class TeamsList extends LitElement {
   filteredTeams: ITeam[] = [];
 
   @state()
+  usableTeams: ITeam[] = [];
+
+  @state()
   _normalisedNames : string[] = [];
 
   @state()
@@ -74,7 +83,7 @@ export class TeamsList extends LitElement {
 
     console.log('this._normalisedNames (before):', this._normalisedNames);
 
-    this._normalisedNames = this.teams.map((team): string => team.normalisedName);
+    this.prepareAllTeams();
 
     console.log('this._normalisedNames (after):', this._normalisedNames);
 
@@ -91,8 +100,9 @@ export class TeamsList extends LitElement {
       console.log('this.players:', this.players)
       console.log('this.teams:', this.teams)
       console.log('this.filteredTeams (before):', this.filteredTeams)
-      this.filteredTeams = [...this.teams];
-      this._normalisedNames = this.teams.map((team) => team.normalisedName);
+      this.usableTeams = getTeamByMemberCount(this.teams, this.min, this.max);
+
+      this._normalisedNames = this.teams.map((team) : string => team.normalisedName);
       console.log('this.filteredTeams (after):', this.filteredTeams)
       console.log('this._normalisedNames (after):', this._normalisedNames)
       console.groupEnd();
@@ -104,8 +114,8 @@ export class TeamsList extends LitElement {
     console.log('this.filteredTeams (before):', this.filteredTeams);
     console.log('this.filterStr:', this.filterStr);
     this.filteredTeams = (this.filterStr === '')
-      ? [...this.teams]
-      : this.teams.filter(getFilterPlayersByName(this.filterStr));
+      ? [...this.usableTeams]
+      : this.usableTeams.filter(getFilterPlayersByName(this.filterStr));
     console.log('this.filteredTeams (after):', this.filteredTeams);
     console.groupEnd();
   }

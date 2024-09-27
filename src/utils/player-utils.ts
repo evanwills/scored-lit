@@ -12,7 +12,15 @@ import { IPlayer, ITeam} from '../types/players.d'
  *          `null` if no player could be matched.
  */
 export const getPlayerByID = <T>(playerList : T[], id : string) : T|null => {
+  console.group('getPlayerByID()');
+  console.log('playerList:', playerList);
+  console.log('id:', id);
   for (let a = 0; a < playerList.length; a += 1) {
+    console.log(`playerList[${a}]:`, playerList[a]);
+    console.log('id:', id);
+    console.log(`playerList[${a}].id:`, (playerList[a] as IPlayer).id);
+    console.log(`playerList[${a}].name:`, (playerList[a] as IPlayer).name);
+    console.log(`playerList[${a}].id === id:`, `("${(playerList[a] as IPlayer).id}" === "${id}")`, (playerList[a] as IPlayer).id === id);
     if ((playerList[a] as IPlayer).id === id) {
       return playerList[a];
     }
@@ -149,6 +157,34 @@ export const hasSameMembers = (
   return '';
 }
 
+export const getTeamByMemberCount = (teams: ITeam[], min: number, max: number) => {
+  if (min > 0 || max > 0) {
+    return teams.filter((team : ITeam) : boolean => {
+      const l = team.members.length;
+
+      return ((min === 0 || l >= min) && (max === 0 || l <= max))
+    });
+  }
+  return [...teams];
+}
+
 export const getNormalisedNames = (players: IPlayer[]) : string[] => players.map((player: IPlayer) : string => player.normalisedName);
 
 export const getPlayersTeams = (playerID: string, teams: ITeam[]) : ITeam[] => teams.filter((team) => (team.members.indexOf(playerID) > -1));
+
+export const membersAreSame = (oldMembers: string[], newMembers: string[]) : boolean => {
+  const oldL = oldMembers.length;
+  const newL = newMembers.length;
+
+  if (oldL !== newL) {
+    return false
+  }
+
+  for (let a = 0; a < oldL; a += 1) {
+    if (newMembers.indexOf(oldMembers[a]) === -1) {
+      return false;
+    }
+  }
+
+  return true;
+}

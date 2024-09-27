@@ -124,7 +124,7 @@ export class PlayerDataForm extends LitElement {
         } else {
           warningMsg = 'Name is unchanged (No point in submitting)';
         }
-      } else if (this._givenName.trim() !== '' || this._familyName.trim() !== '') {
+      } else if (this._givenName !== '' || this._familyName !== '') {
         sendToStore(
           this,
           addNewPlayerAction({
@@ -169,8 +169,8 @@ export class PlayerDataForm extends LitElement {
     if (this.edit === true) {
       label = 'Update';
       heading = `Update ${this.givenName} ${this.familyName}`;
-      action += `--${this.givenName}-${this.familyName}`;
-      labelBy += `--${this.givenName}-${this.familyName}`;
+      action += `--${this.playerID}`;
+      labelBy += `--${this.playerID}`;
     }
 
     let descByID : string | undefined = undefined;

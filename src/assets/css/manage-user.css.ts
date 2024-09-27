@@ -31,11 +31,15 @@ li {
   flex-grow: 1;
 }
 .list-wrap {
-  border-top: 0.05rem solid #999;
+  max-height: 17.125rem;
+  overflow-y: auto;
 }
 .list-item {
   padding: 0.25rem 0;
   border-bottom: 0.05rem solid #999;
+}
+.list-item:first-child {
+  border-top: 0.05rem solid #999;
 }
 .list-item label {
   flex-grow: 1;

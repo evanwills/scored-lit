@@ -21,3 +21,8 @@ export interface ITeam extends IPlayer {
 };
 
 export type TPlayerList = Array<IIndividualPlayer|ITeam>;
+
+export type TPlayerSelectedDetail = {
+  IDs: string[],
+  players: IIndividualPlayer[],
+};

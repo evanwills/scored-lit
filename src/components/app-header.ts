@@ -167,7 +167,7 @@ export class AppHeader extends LitElement {
       line-height: 0.95rem;
       margin: 0;
       max-width: 9rem;
-      transform: translateY(0.075rem)
+      transform: translateY(0.05rem)
     }
     nav {
       position: absolute;

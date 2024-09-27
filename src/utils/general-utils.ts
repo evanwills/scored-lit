@@ -5,7 +5,7 @@ import { IGameRuleData } from "../types/game-rules";
 
 export const namePatternBasic = '^[a-zA-Z0-9]+( +[a-zA-Z0-9]+)*$';
 export const namePatternFamily = '^[a-zA-Z0-9]+([ \-\']+[a-zA-Z0-9]+)*';
-export const namePatternGeneral = '^#?[a-zA-Z0-9]+([ \-\'&#]+[a-zA-Z0-9]+)*';
+export const namePatternGeneral = '^#?[a-zA-Z0-9]+([&, #\\-]+[a-zA-Z0-9]+)*';
 
 /**
  * Get the sum of all the scores up to and including the round being

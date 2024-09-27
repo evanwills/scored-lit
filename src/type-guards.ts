@@ -1,6 +1,7 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { AnyAction } from "redux";
 import { TGameData } from "./types/game-data";
+import { IIndividualPlayer, TPlayerSelectedDetail } from "./types/players";
 
 export const isCustomEvent = (target: Event): target is CustomEvent => {
   return (target as CustomEvent).detail !== undefined;
@@ -22,7 +23,7 @@ export const linkHasHref = (target: EventTarget): target is HTMLAnchorElement =>
 };
 
 export const isGameData = (data: TGameData) : data is TGameData => {
-  return ((data.end === null || (typeof data.end === 'string' && data.end.trim() !== ''))
+  return ((data.end === null || (typeof data.end === 'string' && (data.end as string).trim() !== ''))
     && (typeof data.forced === 'boolean')
     && (typeof data.id === 'string')
     && (typeof data.lead !== 'undefined')
@@ -36,3 +37,31 @@ export const isGameData = (data: TGameData) : data is TGameData => {
     && (data.winner === null || (typeof data.winner === 'string' && data.winner.trim() !== ''))
   );
 };
+
+export const isIndividualPlayer = (data: IIndividualPlayer) : data is IIndividualPlayer => {
+  return (typeof data.id === 'string' && data.id.trim() !== ''
+    && typeof data.name === 'string' && data.name.trim() !== ''
+    && typeof data.normalisedName === 'string' && data.normalisedName.trim() !== ''
+    && typeof data.secondName === 'string')
+}
+
+export const isSelectedPlayerDetails = (data: TPlayerSelectedDetail) : data is TPlayerSelectedDetail => {
+  if (!Array.isArray(data.IDs) || !Array.isArray(data.players)) {
+    return false;
+  }
+  const idL = data.IDs.length;
+  const plL = data.players.length;
+
+  if (idL !== plL) {
+    return false;
+  }
+  for (let a = 0; a < data.IDs.length; a += 1) {
+    console.log(`data.IDs[${a}]:`, data.IDs[a]);
+    console.log(`data.players[${a}]:`, data.players[a]);
+    if (typeof data.IDs[a] !== 'string' || !isIndividualPlayer(data.players[a])) {
+      return false;
+    }
+  }
+
+  return true;
+}
