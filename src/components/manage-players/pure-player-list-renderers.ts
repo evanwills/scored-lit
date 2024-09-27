@@ -143,13 +143,19 @@ export const renderNameField = (
  *
  * @todo disable checkbox when too many teams have been selected
  */
-export const playerCheckboxItem = (player : IIndividualPlayer) : TemplateResult => html`
-  <li>
-    <input id="player-${player.id}" type="checkbox" value="${player.id}" />
-    <label for="player-${player.id}">
-      ${player.name} ${player.secondName}
-    </label>
-  </li>`;
+export const playerCheckboxItem = (IDs : string[]) => (player : IIndividualPlayer) : TemplateResult => {
+  // console.group('playerCheckboxItem()');
+  // console.log('IDs:', IDs);
+  // console.log('player.id:', player.id);
+  // console.groupEnd();
+  return html`
+    <li>
+      <input id="player-${player.id}" type="checkbox" value="${player.id}" ?checked=${IDs.indexOf(player.id) > -1} />
+      <label for="player-${player.id}">
+        ${player.name} ${player.secondName}
+      </label>
+    </li>`;
+}
 
 
 export const renderTeamMembers = (members : string[], players : IIndividualPlayer[]) : TemplateResult[] => {

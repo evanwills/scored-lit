@@ -5,10 +5,10 @@ import {
   state,
 } from 'lit/decorators.js';
 import { getEpre, normaliseName } from '../../utils/general-utils';
-import { IPlayer, TPlayerSelectedDetail, ITeam, IIndividualPlayer } from '../../types/players';
+import { ITeam, IIndividualPlayer } from '../../types/players';
 import { renderNameField } from '../manage-players/pure-player-list-renderers';
 import '../current-game/select-players';
-import { inputHasValue, isIndividualPlayer, isSelectedPlayerDetails } from '../../type-guards';
+import { inputHasValue, isSelectedPlayerDetails } from '../../type-guards';
 import { membersAreSame, nameIsDuplicate } from '../../utils/player-utils';
 import { sendToStore } from '../../redux/redux-utils';
 import { addNewTeamAction, deleteTeamAction, updateTeamAction } from '../../redux/teams/team-actions';
@@ -21,7 +21,7 @@ export class TeamDataFprm extends LitElement {
   // START: props
 
   @property({ type: Array })
-  allplayers : IPlayer[] = [];
+  allplayers : IIndividualPlayer[] = [];
 
   @property({ type: Array })
   allteams : ITeam[] = [];
@@ -103,16 +103,16 @@ export class TeamDataFprm extends LitElement {
   }
 
   keyupHandler(event : InputEvent) {
-    console.group(ePre('keyupHandler'));
-    console.log('event:', event);
-    console.log('this.normalisednames:', this.normalisednames)
+    // console.group(ePre('keyupHandler'));
+    // console.log('event:', event);
+    // console.log('this.normalisednames:', this.normalisednames)
     if (typeof event.target !== 'undefined'
       && event.target !== null
       && inputHasValue(event.target)
     ) {
       this._overrideName = false;
       console.log('event.target:', event.target);
-      const value = event.target.value.replace(/^\s+|[^a-z0-9' &#-]+/ig, '');
+      const value = event.target.value.replace(/^\s+|[^a-z0-9,' &#-]+/ig, '');
       console.log('value:', value);
 
       const initial = (typeof event.target.dataset.initial === 'string' && event.target.dataset.initial !== '')
@@ -125,9 +125,9 @@ export class TeamDataFprm extends LitElement {
         this._teamName = value;
       }
 
-      console.log('initial:', initial);
+      // console.log('initial:', initial);
     }
-    console.groupEnd();
+    // console.groupEnd();
   }
 
   submitHandler(event : SubmitEvent) {
@@ -151,6 +151,7 @@ export class TeamDataFprm extends LitElement {
                 normalisedName,
               }),
             );
+            this.dispatchEvent(new CustomEvent('updated', { detail: this._teamName }));
           } else {
             warningMsg = 'Name or members list is unchanged.';
           }
@@ -178,11 +179,11 @@ export class TeamDataFprm extends LitElement {
   }
 
   playerSelectedHandler(event: CustomEvent) {
-    console.group(ePre('playerSelectedHandler'));
-    console.log('event:', event);
-    console.log('event.detail:', event.detail);
-    console.log('isSelectedPlayerDetails(event.detail):', isSelectedPlayerDetails(event.detail));
-    console.log('this._overrideName:', this._overrideName);
+    // console.group(ePre('playerSelectedHandler'));
+    // console.log('event:', event);
+    // console.log('event.detail:', event.detail);
+    // console.log('isSelectedPlayerDetails(event.detail):', isSelectedPlayerDetails(event.detail));
+    // console.log('this._overrideName:', this._overrideName);
 
     if (isSelectedPlayerDetails(event.detail)) {
       this._members = event.detail.IDs;
@@ -195,9 +196,9 @@ export class TeamDataFprm extends LitElement {
       }
     }
 
-    console.log('this._overrideName:', this._overrideName);
-    console.log('this._teamName:', this._teamName);
-    console.groupEnd();
+    // console.log('this._overrideName:', this._overrideName);
+    // console.log('this._teamName:', this._teamName);
+    // console.groupEnd();
   }
 
   playerSelectedErrorHandler(event: CustomEvent) {
@@ -222,18 +223,19 @@ export class TeamDataFprm extends LitElement {
 
     if (this.edit === true) {
       label = 'Update';
-      heading = `Update ${this.teamid}`;
+      heading = `Update ${this._teamName}`;
       action += `--${this.teamid}`;
       labelBy += `--${this.teamid}`;
     }
-    console.log('this:', this);
-    console.log('this.teamid:', this.teamid);
+    // console.log('this:', this);
+    // console.log('this.teamid:', this.teamid);
     console.log('this.members:', this.members);
-    console.log('this.normalisednames:', this.normalisednames);
-    console.log('this.teamname:', this.teamname);
-    console.log('this._teamName:', this._teamName);
-    console.log('this.allteams:', this.allteams);
-    console.log('this.allplayers:', this.allplayers);
+    console.log('this._members:', this._members);
+    // console.log('this.normalisednames:', this.normalisednames);
+    // console.log('this.teamname:', this.teamname);
+    // console.log('this._teamName:', this._teamName);
+    // console.log('this.allteams:', this.allteams);
+    // console.log('this.allplayers:', this.allplayers);
 
     let descByID : string | undefined = undefined;
 
@@ -255,14 +257,16 @@ export class TeamDataFprm extends LitElement {
         method="post"
         @submit=${this.submitHandler}>
         ${(this.edit === false)
-          ? html`<h2 id="${labelBy}">${heading}</h2>`
-          : html`<h3 id="${labelBy}">${heading}</h3>`
+          ? html`<h3 id="${labelBy}">${heading}</h3>`
+          : ''
         }
         <select-players
           .allplayers=${this.allplayers}
           .allteams=${this.allteams}
           .max="${this.max}"
           .min="${this.min}"
+          .refid=${this.teamname}
+          .selectedplayers=${this._members}
           @playerselected=${this.playerSelectedHandler}></select-players>
 
         <ul class="field-wrap">
@@ -308,6 +312,9 @@ export class TeamDataFprm extends LitElement {
     input:invalid {
       outline: 0.2rem solid #c00;
       outline-offset: 0.1rem
+    }
+    h3 {
+      margin: 0;
     }
 
     .field-wrap {

@@ -10,13 +10,13 @@ import { sendToStore } from './redux/redux-utils';
 import { EAppStates, setAppState } from './redux/app-state';
 import { TAppRoute } from './types/general';
 import { inputHasValue, linkHasHref } from './type-guards';
-// import { getEpre } from './utils/general-utils';
+import { getEpre } from './utils/general-utils';
 import './components/current-game/game';
 import './components/manage-players/player-list';
 import './components/manage-teams/teams-list';
 import './components/app-header'
 
-// const ePre = getEpre('scored');
+const ePre = getEpre('scored');
 
 /**
  * An example element.
@@ -36,16 +36,16 @@ export class ScoreCards extends connect(store)(LitElement) {
   currentGame : TGameData|null = null;
 
   @state()
-  customGames: Array<IGameRuleData> = [];
+  customGames: IGameRuleData[] = [];
 
   @state()
-  pastGames: Array<TGameData> = [];
+  pastGames: TGameData[] = [];
 
   @state()
-  players: Array<IIndividualPlayer> = [];
+  players: IIndividualPlayer[] = [];
 
   @state()
-  teams: Array<ITeam> = [];
+  teams: ITeam[] = [];
 
   @state()
   restarters: number = 0;
@@ -185,6 +185,9 @@ export class ScoreCards extends connect(store)(LitElement) {
   }
 
   renderView() : TemplateResult|string {
+    console.group(ePre('renderView'));
+    console.log('this.teams:', this.teams);
+    console.groupEnd();
     switch (this.appState) {
       case EAppStates.game:
         return html`<current-game

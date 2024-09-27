@@ -95,18 +95,21 @@ export class TeamsList extends LitElement {
   // START: helper methods
 
   prepareAllTeams() {
-    if (this.teams.length !== this._normalisedNames.length) {
-      console.group(ePre('prepareAllTeams'));
-      console.log('this.players:', this.players)
-      console.log('this.teams:', this.teams)
-      console.log('this.filteredTeams (before):', this.filteredTeams)
+    console.group(ePre('prepareAllTeams'));
+    console.log('this.players:', this.players)
+    console.log('this.teams:', this.teams)
+    console.log('this.filteredTeams (before):', this.filteredTeams)
+    console.log('this.usableTeams (before):', this.usableTeams)
+    if (this.teams.length > 0 && this.teams.length !== this._normalisedNames.length) {
       this.usableTeams = getTeamByMemberCount(this.teams, this.min, this.max);
+      this.filteredTeams = [...this.usableTeams];
 
       this._normalisedNames = this.teams.map((team) : string => team.normalisedName);
-      console.log('this.filteredTeams (after):', this.filteredTeams)
-      console.log('this._normalisedNames (after):', this._normalisedNames)
-      console.groupEnd();
     }
+    console.log('this.usableTeams (after):', this.usableTeams)
+    console.log('this.filteredTeams (after):', this.filteredTeams)
+    console.log('this._normalisedNames (after):', this._normalisedNames)
+    console.groupEnd();
   }
 
   setFilteredTeams() {
@@ -150,10 +153,12 @@ export class TeamsList extends LitElement {
             ${this.filteredTeams.map((team) => html`
               <li class="list-item">
                 <team-list-item
-                  teamname="${team.name}"
-                  members="${team.members}"
-                  normalisednames=${this._normalisedNames}
-                  teamid="${team.id}"></team-list-item>
+                  .allplayers=${this.players}
+                  .allteams=${this.teams}
+                  .teamname="${team.name}"
+                  .members="${team.members}"
+                  .normalisednames=${this._normalisedNames}
+                  .teamid="${team.id}"></team-list-item>
               </li>`)}
           </ul>`
       : renderNoPlayers(

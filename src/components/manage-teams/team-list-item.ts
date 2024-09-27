@@ -14,32 +14,39 @@ import {
 // import { ifDefined } from 'lit/directives/if-defined.js';
 import { getEpre } from '../../utils/general-utils';
 import './team-data-form';
+import { IIndividualPlayer, ITeam } from '../../types/players';
 
-const ePre = getEpre('teams-list');
+const ePre = getEpre('teams-list-item');
 
 @customElement('team-list-item')
 export class TeamListItem extends LitElement {
   // ------------------------------------------------------
   // START: props
 
-  @property({ type: String })
-  teamname : string = '';
+  @property({ type: Array })
+  allplayers : IIndividualPlayer[] = [];
+
+  @property({ type: Array })
+  allteams : ITeam[] = [];
 
   @property({ type: Array })
   members : string[] = [];
 
+  @property({ type: Array })
+  normalisedNames : string[] = [];
+
   @property({ type: String })
   teamid : string = '';
 
-  @property({ type: Array })
-  normalisedNames : string[] = [];
+  @property({ type: String })
+  teamname : string = '';
 
   //  END:  props
   // ------------------------------------------------------
   // START: state
 
   @state()
-  displayName : string = '';
+  _displayName : string = '';
 
   private details : HTMLDetailsElement|null = null;
   private summary : HTMLElement|null = null;
@@ -47,6 +54,12 @@ export class TeamListItem extends LitElement {
   //  END:  state
   // ------------------------------------------------------
   // START: lifecycle methods
+
+  connectedCallback() {
+    console.group(ePre('connectedCallback'));
+    super.connectedCallback();
+    this._displayName = this.teamname
+  }
 
   //  END:  lifecycle methods
   // ------------------------------------------------------
@@ -85,20 +98,21 @@ export class TeamListItem extends LitElement {
   }
   updateName(event: CustomEvent) {
     console.group(ePre('updateName()'));
-    console.log('this.displayName (before):', this.displayName);
-    console.log('event.detail.givenName', event.detail.givenName);
-    console.log('event.detail.familyName', event.detail.familyName);
-    this.displayName = `${event.detail.givenName} ${event.detail.familyName} `;
+    console.log('this._displayName (before):', this._displayName);
+    console.log('event.detail.familyName', event.detail);
+    this._displayName = event.detail;
     this.requestUpdate();
-    console.log('this.displayName (after):', this.displayName);
+    console.log('this._displayName (after):', this._displayName);
   }
 
   //  END:  event handlers
   // ------------------------------------------------------
   // START: main render method
+
   render() {
     console.group(ePre('render()'));
     console.log('this:', this);
+    console.log('this._displayName:', this._displayName);
     console.log('this.teamname:', this.teamname);
     console.log('this.members:', this.members);
     console.log('this.teamid:', this.teamid);
@@ -107,15 +121,18 @@ export class TeamListItem extends LitElement {
     return html`
       <details id="${this.detailsID()}" name="team-list">
         <summary>
-          <span class="sr-only">Edit</span> ${this.teamname}
+          <span class="sr-only">Edit</span> ${this._displayName}
         </summary>
 
         <div>
           <team-data-form
             edit
-            teamname="${this.teamname}"
-            team-id="${this.teamid}"
-            normalised-names=${this.normalisedNames}
+            .allplayers=${this.allplayers}
+            .allteams=${this.allteams}
+            .teamname="${this.teamname}"
+            .teamid="${this.teamid}"
+            .members=${this.members}
+            .normalised-names=${this.normalisedNames}
             @reduxaction=${this.closeDetails}
             @updated=${this.updateName}></team-data-form>
         </div>

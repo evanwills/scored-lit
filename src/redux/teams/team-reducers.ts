@@ -56,7 +56,7 @@ export const addPlayerToTeamReducer : Reducer = (
   );
 }
 
-export const initialState : Array<ITeam> = getLocalValue('pastGameSlice', [], 'object|null');
+export const initialState : Array<ITeam> = getLocalValue('teams', [], 'object|null');
 
 export default createReducer(
   initialState,

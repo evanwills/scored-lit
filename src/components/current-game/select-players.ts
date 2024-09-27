@@ -7,7 +7,7 @@ import { repeat } from "lit/directives/repeat.js";
 // import { addNewGameAction } from "../../redux/currentGame/current-actions";
 import { IIndividualPlayer, IPlayer, ITeam } from "../../types/players";
 import { filterPlayersByIDs, getFilterPlayersByName, getPlayerByID } from "../../utils/player-utils";
-import { getEpre } from "../../utils/general-utils";
+import { getEpre, normaliseName } from "../../utils/general-utils";
 import { inputHasValue } from "../../type-guards";
 import { playerCheckboxItem, renderNameField, teamCheckboxItem } from "../manage-players/pure-player-list-renderers";
 
@@ -43,7 +43,10 @@ export class SelectPlayers extends LitElement {
   min: number = 0;
 
   @property({ type: Array })
-  selectedPlayers : IPlayer[] = [];
+  selectedplayers : string[] = [];
+
+  @property({ type: String })
+  refid : string = '';
 
   @state()
   _selectedPlayers : IPlayer[] = [];
@@ -62,23 +65,24 @@ export class SelectPlayers extends LitElement {
   // START: lifecycle methods
 
   connectedCallback() {
-    console.group(ePre('connectedCallback'));
-    super.connectedCallback()
-    console.log('this:', this);
-    console.log('this.allteams:', this.allteams);
-    console.log('this.allplayers:', this.allplayers);
-    console.log('this.selectedPlayers:', this.selectedPlayers);
-    console.log('this.isteam:', this.isteam);
-    console.log('this._selectedPlayers:', this._selectedPlayers);
+    super.connectedCallback();
+    // console.group(ePre('connectedCallback'));
+    // console.log('this:', this);
+    // console.log('this.refid:', this.refid);
+    // console.log('this.allteams:', this.allteams);
+    // console.log('this.allplayers:', this.allplayers);
+    // console.log('this.selectedplayers:', this.selectedplayers);
+    // console.log('this.isteam:', this.isteam);
+    // console.log('this._selectedPlayers:', this._selectedPlayers);
 
-    this._selectedPlayers = this.selectedPlayers;
+    this._playerIDs = this.selectedplayers;
     this._showFilter = (this.isteam)
       ? (this.allteams.length > 7)
       : (this.allplayers.length > 7);
 
-    console.log('this._playerIDs:', this._playerIDs);
-    console.log('this._playerFilter:', this._playerFilter);
-    console.groupEnd();
+    // console.log('this._playerIDs:', this._playerIDs);
+    // console.log('this._playerFilter:', this._playerFilter);
+    // console.groupEnd();
   }
 
   //  END:  lifecycle methods
@@ -94,34 +98,34 @@ export class SelectPlayers extends LitElement {
   // START: sub-render method
 
   handleFilterKeyup(event: InputEvent) {
-    console.group(ePre('handleFilterKeyup'));
+    // console.group(ePre('handleFilterKeyup'));
 
     if (typeof event.target !== 'undefined'
       && event.target !== null
       && inputHasValue(event.target)
     ) {
-      console.log('event.target:', event.target);
-      const value = event.target.value.replace(/^\s+|[^a-z0-9' &#-]+/ig, '');
-      console.log('value:', value);
+      // console.log('event.target:', event.target);
+      this._playerFilter = normaliseName(event.target.value);
+      // console.log('value:', value);
     }
-    console.groupEnd();
+    // console.groupEnd();
   }
 
 
   handlePlayerSelect(event: InputEvent) {
-    console.group(ePre('handlePlayerSelect'));
+    // console.group(ePre('handlePlayerSelect'));
 
     if (typeof event.target !== 'undefined'
       && event.target !== null
       && inputHasValue(event.target)
     ) {
-      console.log('event.target:', event.target);
+      // console.log('event.target:', event.target);
       const isChecked = event.target.checked === true;
       const value = event.target.value;
-      console.log('value:', value);
+      // console.log('value:', value);
       let go = false;
       const tmp = getPlayerByID(this.allplayers, value);
-      console.log('tmp:', tmp);
+      // console.log('tmp:', tmp);
 
       if (tmp !== null) {
         const i = this._playerIDs.indexOf(value);
@@ -187,9 +191,9 @@ export class SelectPlayers extends LitElement {
         );
       }
     }
-    console.log('this._playerIDs:', this._playerIDs);
-    console.log('this._selectedPlayers:', this._selectedPlayers);
-    console.groupEnd();
+    // console.log('this._playerIDs:', this._playerIDs);
+    // console.log('this._selectedPlayers:', this._selectedPlayers);
+    // console.groupEnd();
   };
 
   handleConfirmPlayers() {
@@ -197,8 +201,8 @@ export class SelectPlayers extends LitElement {
 
   // renderPlayers() : TemplateResult[] {
   renderPlayers() : unknown {
-    console.group(ePre('renderPlayers'));
-    console.log('this.allplayers:', this.allplayers);
+    // console.group(ePre('renderPlayers'));
+    // console.log('this.allplayers:', this.allplayers);
     // let playerList = (this._playerIDs.length > 0)
     //   ? filterPlayersByIDs(this.allplayers, this._playerIDs)
     //   : [...this.allplayers];
@@ -210,25 +214,24 @@ export class SelectPlayers extends LitElement {
         getFilterPlayersByName(this._playerFilter),
       );
     }
-    console.log('this.allplayers:', this.allplayers);
-    console.log('playerList:', playerList);
-    console.groupEnd();
+    // console.log('playerList:', playerList);
+    // console.groupEnd();
 
     // return playerList.map(playerCheckboxItem);
 
     return repeat(
       playerList,
       (player : IIndividualPlayer) : string => player.id,
-      playerCheckboxItem,
+      playerCheckboxItem(this._playerIDs),
     );
   }
 
   renderTeams() : unknown {
-    console.group(ePre('renderTeams'));
-    console.log('this:', this);
-    console.log('this.allteams:', this.allteams);
-    console.log('this.allplayers:', this.allplayers);
-    console.groupEnd();
+    // console.group(ePre('renderTeams'));
+    // console.log('this:', this);
+    // console.log('this.allteams:', this.allteams);
+    // console.log('this.allplayers:', this.allplayers);
+    // console.groupEnd();
     if (this.allteams.length === 0) {
       return html`<p>No teams available</p>`;
     }
@@ -256,20 +259,29 @@ export class SelectPlayers extends LitElement {
       ? 'A Team'
       : 'Lu Smith';
 
-    console.group(ePre('render'));
-    console.log('this:', this);
-    console.log('list:', list);
-    console.log('this.allteams:', this.allteams);
-    console.log('this.allplayers:', this.allplayers);
-    console.log('this.isteam:', this.isteam);
+    // console.group(ePre('render'));
+    // console.log('this:', this);
+    // console.log('list:', list);
+    // console.log('this.allteams:', this.allteams);
+    // console.log('this.refid:', this.refid);
+    // console.log('this.allplayers:', this.allplayers);
+    // console.log('this.isteam:', this.isteam);
+    // console.log('this._playerIDs:', this._playerIDs);
     // console.log('this.renderTeams():', this.renderTeams());
-    console.log('list:', list);
-    console.groupEnd();
+    // console.log('list:', list);
+    // console.groupEnd();
+
+    let heading = 'Select '
+    heading += (this.isteam === true)
+      ? 'teams'
+      : 'players';
+
     return html`
       <form aria-labeledby="select-players-form">
-        <h3>
-          Select ${(this.isteam === true) ? 'teams' : 'players'}
-        </h3>
+        ${(this.refid !== '')
+          ? html`<h4>${heading}</h4>`
+          : html`<h3>${heading}</h3>`
+        }
 
         <ul>
           ${(this._showFilter === true)
@@ -299,6 +311,9 @@ export class SelectPlayers extends LitElement {
   static styles = css`
     .label {
       white-space: wrap;
+    }
+    h3, h4 {
+      margin: 0.5rem 0 0;
     }
     ul {
       list-style-type: none;
