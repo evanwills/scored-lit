@@ -131,11 +131,12 @@ export class PlayerList extends LitElement {
     return html`<section>
       <header>
         <h2>Players</h2>
-        ${renderFilterInput(
-          this.players,
-          this.handleFilterKeyUp,
-        )}
       </header>
+      ${renderFilterInput(
+        this.players.length,
+        'Players',
+        this.handleFilterKeyUp,
+      )}
       ${playerList}
       <footer>
         <player-data-form

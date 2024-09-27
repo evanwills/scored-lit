@@ -1,8 +1,10 @@
 import { html, TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { IIndividualPlayer } from '../../types/players';
+import { IIndividualPlayer, ITeam } from '../../types/players';
 import './player-data-form';
+import { getPlayerByID } from '../../utils/player-utils';
+import { namePatternBasic, namePatternFamily, namePatternGeneral } from '../../utils/general-utils';
 
 export const renderFilterInput = (
   userCount : number,
@@ -98,6 +100,7 @@ export const renderNameField = (
   placeholder: string,
   isDupe: boolean,
   handler: Function,
+  nameType: string = 'basic',
 ) : TemplateResult => {
   const key = label.toLocaleLowerCase();
   const _id = (typeof id === 'string' && id.trim() !== '')
@@ -109,6 +112,14 @@ export const renderNameField = (
 
   const fieldID = `edit-${_id}-${key}-name`;
 
+  let pattern = namePatternBasic;
+
+  if (nameType === 'family') {
+    pattern = namePatternFamily;
+  } else if (nameType === 'general') {
+    pattern = namePatternGeneral;
+  }
+
   return html`
     <li class="field-item">
       <label for="${fieldID}">${label} name</label>
@@ -118,8 +129,54 @@ export const renderNameField = (
         id="${fieldID}"
         type="text"
         .value="${value}"
-        pattern="^[a-zA-Z0-9]+( +[a-zA-Z0-9]+)*$"
+        pattern="${pattern}"
         placeholder="${placeholder}"
         @keyup=${handler} />
     </li>`;
 };
+
+/**
+ * Get list item with checkbox and label for an individual player
+ *
+ * @param player
+ * @returns list item with checkbox and label for an individual player
+ *
+ * @todo disable checkbox when too many teams have been selected
+ */
+export const playerCheckboxItem = (player : IIndividualPlayer) : TemplateResult => html`
+  <li>
+    <input id="player-${player.id}" type="checkbox" value="${player.id}" />
+    <label for="player-${player.id}">
+      ${player.name} ${player.secondName}
+    </label>
+  </li>`;
+
+
+export const renderTeamMembers = (members : string[], players : IIndividualPlayer[]) : TemplateResult[] => {
+  return members.map((playerID) => {
+    const player = getPlayerByID(players, playerID);
+
+    return html`<li>
+      ${(player !== null)
+        ? `${player.name} ${player.secondName}`
+        : 'Unkown player'}
+      </li>`;
+  });
+}
+
+/**
+ *
+ * @param allplayers
+ * @returns
+ * @todo disable checkbox when too many teams have been selected
+ */
+export const teamCheckboxItem = (allplayers: IIndividualPlayer[]) => (team : ITeam) : TemplateResult => html`
+  <li>
+    <input id="team-${team.id}" type="checkbox" value="${team.id}" />
+    <label for="team-${team.id}">
+      ${team.name}
+    </label>
+    <ul>
+      ${renderTeamMembers(team.members, allplayers)}
+    </ul>
+  </li>`;

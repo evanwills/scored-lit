@@ -1,5 +1,5 @@
-import { LitElement, TemplateResult, css, html } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { LitElement, TemplateResult, css, html } from 'lit';
+import { customElement, state } from 'lit/decorators.js';
 import { connect } from 'pwa-helpers';
 import { store } from './redux/store';
 import { EGameStates, TGameData, TScoredStore } from './types/game-data.d';

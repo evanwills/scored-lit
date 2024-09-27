@@ -1,7 +1,12 @@
 import { nanoid } from "nanoid";
 import { EGameStates, InitialGameData, TGameData } from "../types/game-data";
 import { FEpre } from "../types/general";
-import { IGameRuleData, IGameRules } from "../types/game-rules";
+import { IGameRuleData } from "../types/game-rules";
+
+export const namePatternBasic = '^[a-zA-Z0-9]+( +[a-zA-Z0-9]+)*$';
+export const namePatternFamily = '^[a-zA-Z0-9]+([ \-\']+[a-zA-Z0-9]+)*';
+export const namePatternGeneral = '^#?[a-zA-Z0-9]+([ \-\'&#]+[a-zA-Z0-9]+)*';
+
 /**
  * Get the sum of all the scores up to and including the round being
  * rendered.
@@ -69,7 +74,7 @@ export const getIdAndStart = () : InitialGameData => ({
   id: nanoid(),
   lead: null,
   looser: null,
-  start: new Date().toISOString(),
+  start: Date.now(),
   winner: null,
 });
 

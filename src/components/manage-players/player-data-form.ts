@@ -12,6 +12,7 @@ import { nanoid } from 'nanoid';
 import { inputHasValue } from '../../type-guards';
 import { normaliseName } from '../../utils/general-utils';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { nameIsDuplicate } from '../../utils/player-utils';
 // import { getEpre } from '../../utils/general-utils';
 
 // const ePre = getEpre('players-list');
@@ -93,9 +94,7 @@ export class PlayerDataForm extends LitElement {
         }
         const normalised = normaliseName(this._givenName + this._familyName);
 
-        const tmp = this.normalisedNames.find((player) => player === normalised);
-
-        this._isDupe = typeof tmp !== 'undefined';
+        this._isDupe = nameIsDuplicate(normalised, this.normalisedNames);
       }
     }
   }
@@ -105,8 +104,7 @@ export class PlayerDataForm extends LitElement {
 
     let warningMsg = '';
 
-    if (this._isDupe === false
-    ) {
+    if (this._isDupe === false) {
       this._givenName = this._givenName.trim();
       this._familyName = this._familyName.trim();
       const normalisedName = normaliseName(this._givenName + this._familyName);
@@ -165,11 +163,14 @@ export class PlayerDataForm extends LitElement {
 
     let label = 'Add';
     let heading = 'New player';
-    const labelBy = 'players-data-form-head';
+    let labelBy = 'players-data-form-head';
+    let action = '#add-player';
 
     if (this.edit === true) {
       label = 'Update';
       heading = `Update ${this.givenName} ${this.familyName}`;
+      action += `--${this.givenName}-${this.familyName}`;
+      labelBy += `--${this.givenName}-${this.familyName}`;
     }
 
     let descByID : string | undefined = undefined;
@@ -183,8 +184,8 @@ export class PlayerDataForm extends LitElement {
 
     return html`
       <form
-        action=""
-        aria-labeldby="${labelBy}"
+        action="${action}"
+        aria-labelledby="${labelBy}"
         class="${this.edit === true ? 'edit-mode' : ''}"
         method="post"
         @submit=${this.submitHandler}>
