@@ -11,17 +11,17 @@ import { IPlayer, ITeam} from '../types/players.d'
  * @returns player/team object if one was matched by ID.
  *          `null` if no player could be matched.
  */
-export const getPlayerByID = <T>(playerList : T[], id : string) : T|null => {
+export const getPlayerByID = <T extends IPlayer>(playerList : T[], id : string) : T|null => {
   console.group('getPlayerByID()');
   console.log('playerList:', playerList);
   console.log('id:', id);
   for (let a = 0; a < playerList.length; a += 1) {
     console.log(`playerList[${a}]:`, playerList[a]);
     console.log('id:', id);
-    console.log(`playerList[${a}].id:`, (playerList[a] as IPlayer).id);
-    console.log(`playerList[${a}].name:`, (playerList[a] as IPlayer).name);
-    console.log(`playerList[${a}].id === id:`, `("${(playerList[a] as IPlayer).id}" === "${id}")`, (playerList[a] as IPlayer).id === id);
-    if ((playerList[a] as IPlayer).id === id) {
+    console.log(`playerList[${a}].id:`, playerList[a].id);
+    console.log(`playerList[${a}].name:`, playerList[a].name);
+    console.log(`playerList[${a}].id === id:`, `("${playerList[a].id}" === "${id}")`, playerList[a].id === id);
+    if (playerList[a].id === id) {
       return playerList[a];
     }
   }
@@ -37,7 +37,7 @@ export const getPlayerByID = <T>(playerList : T[], id : string) : T|null => {
  *
  * @returns A list of players matched by their IDs
  */
-export const filterPlayersByIDs = <T>(playerList : T[], IDs : string[]) : T[] => playerList.filter(
+export const filterPlayersByIDs = <T extends IPlayer>(playerList : T[], IDs : string[]) : T[] => playerList.filter(
   (player : T) => (typeof IDs.find((id) => id === (player as IPlayer).id) !== 'undefined')
 );
 
@@ -50,9 +50,33 @@ export const filterPlayersByIDs = <T>(playerList : T[], IDs : string[]) : T[] =>
  *
  * @returns A list of players matched by their IDs
  */
-export const excludePlayersByIDs = <T>(playerList : T[], IDs : string[]) : T[]|null => playerList.filter(
-  (player) => (typeof IDs.find((id) => id === (player as IPlayer).id) === 'undefined'),
+export const excludePlayersByIDs = <T extends IPlayer>(playerList : T[], IDs : string[]) : T[]|null => playerList.filter(
+  (player) => (typeof IDs.find((id) => id === player.id) === 'undefined'),
 );
+
+/**
+ * Sort list of players alphabetically
+ *
+ * @param players List of players to be sorted
+ *
+ * @returns List of players sorted alphabetically
+ */
+export const sortPlayersByName = <T extends IPlayer>(players: T[]) : T[] => {
+  const output : T[] = [...players];
+
+  output.sort((a : T, b: T) : number => {
+    if (a.normalisedName < b.normalisedName) {
+      return -1;
+    }
+    if (a.normalisedName > b.normalisedName) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  return output;
+};
 
 /**
  * Get a function that returns TRUE if players/teams matched by
@@ -62,7 +86,7 @@ export const excludePlayersByIDs = <T>(playerList : T[], IDs : string[]) : T[]|n
  *
  * @returns Function the can be passed to Array.filter()
  */
-export const getFilterPlayersByName = (filter : string) => <T>(player : T) : boolean => (player as IPlayer).normalisedName.includes(filter);
+export const getFilterPlayersByName = (filter : string) => <T extends IPlayer>(player : T) : boolean => player.normalisedName.includes(filter);
 
 /**
  * Check whether a (normalised) player/team name matches another
@@ -77,7 +101,7 @@ export const getFilterPlayersByName = (filter : string) => <T>(player : T) : boo
 export const nameIsDuplicate = (
   nName: string,
   nNameList: string[],
-) : boolean => (nNameList.indexOf(nName) > -1);
+) : boolean => nNameList.includes(nName);
 
 /**
  * Check whether a Player/Team has the same (normalised) name as
@@ -130,7 +154,7 @@ export const hasSameMembers = (
 
   // compare members
   allT : for (let a = 0; a < allTeams.length; a += 1) {
-    if (l !== allTeams[a].members.length || team.id !== allTeams[a].id) {
+    if (l !== allTeams[a].members.length || team.id === allTeams[a].id) {
       // Teams have a different number of members so cannot be a
       // duplicate
       // Or
@@ -140,7 +164,7 @@ export const hasSameMembers = (
     }
 
     for (let b = 0; b < l; b += 1) {
-      if (allTeams[a].members.indexOf(members[b]) < 0) {
+      if (allTeams[a].members.includes(members[b]) === false) {
         // team member[b] is not in allTeams[a]!
         // teams must be different;
         // Lets move on to the next team
@@ -157,6 +181,15 @@ export const hasSameMembers = (
   return '';
 }
 
+/**
+ * Get a list of teams with the right number of members
+ *
+ * @param teams List of teams
+ * @param min   Minimum number of players required for team to be eligible
+ * @param max   Maximum number of players required for team to be eligible
+ *
+ * @returns List of teams with the right number of players
+ */
 export const getTeamByMemberCount = (teams: ITeam[], min: number, max: number) => {
   if (min > 0 || max > 0) {
     return teams.filter((team : ITeam) : boolean => {
@@ -168,11 +201,43 @@ export const getTeamByMemberCount = (teams: ITeam[], min: number, max: number) =
   return [...teams];
 }
 
+/**
+ * Get a list of normalised player/team names from the list of
+ * player/team objects
+ *
+ * @param players List of players/teams
+ *
+ * @returns List of normalised names for all players/teams in the
+ *          source list.
+ */
 export const getNormalisedNames = (players: IPlayer[]) : string[] => players.map((player: IPlayer) : string => player.normalisedName);
 
-export const getPlayersTeams = (playerID: string, teams: ITeam[]) : ITeam[] => teams.filter((team) => (team.members.indexOf(playerID) > -1));
+/**
+ * Get a list of teams a player belongs to.
+ *
+ * @param playerID ID of player whose teams should be listed
+ * @param teams    List of all teams
+ *
+ * @returns List of teams the player is a member of.
+ */
+export const getPlayersTeams = (
+  playerID: string,
+  teams: ITeam[]
+) : ITeam[] => teams.filter((team) => team.members.includes(playerID));
 
-export const membersAreSame = (oldMembers: string[], newMembers: string[]) : boolean => {
+/**
+ * Check whether two lists of members are identical
+ *
+ * @param oldMembers Previous list of members (Player IDs) of a team
+ * @param newMembers New list of members (Player IDs) of a team
+ *
+ * @returns TRUE if `oldMembers` has exactly the same members as
+ *          `newMembers`. FALSE otherwise
+ */
+export const membersAreSame = (
+  oldMembers: string[],
+  newMembers: string[]
+) : boolean => {
   const oldL = oldMembers.length;
   const newL = newMembers.length;
 
@@ -181,7 +246,7 @@ export const membersAreSame = (oldMembers: string[], newMembers: string[]) : boo
   }
 
   for (let a = 0; a < oldL; a += 1) {
-    if (newMembers.indexOf(oldMembers[a]) === -1) {
+    if (newMembers.includes(oldMembers[a]) === false) {
       return false;
     }
   }

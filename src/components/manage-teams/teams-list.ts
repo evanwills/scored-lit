@@ -155,10 +155,10 @@ export class TeamsList extends LitElement {
                 <team-list-item
                   .allplayers=${this.players}
                   .allteams=${this.teams}
-                  .teamname="${team.name}"
                   .members="${team.members}"
                   .normalisednames=${this._normalisedNames}
-                  .teamid="${team.id}"></team-list-item>
+                  .teamid="${team.id}"
+                  .teamname="${team.name}"></team-list-item>
               </li>`)}
           </ul>`
       : renderNoPlayers(
