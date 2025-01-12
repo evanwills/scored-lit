@@ -1,5 +1,5 @@
-import { Store } from "redux"
-import { getLocalValue, setLocalValue } from "../utils/storage-utils";
+import { Store } from 'redux'
+import { getLocalValue, setLocalValue } from '../utils/storage-utils';
 
 export const persistStore = (store : Store) => async () => {
   const current = store.getState();

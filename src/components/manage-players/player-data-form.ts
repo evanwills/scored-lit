@@ -58,6 +58,9 @@ export class PlayerDataForm extends LitElement {
   @state()
   _warningMsg : string = '';
 
+  @state()
+  _canSave : boolean = false;
+
   //  END:  state
   // ------------------------------------------------------
   // START: lifecycle methods
@@ -71,6 +74,8 @@ export class PlayerDataForm extends LitElement {
   //  END:  lifecycle methods
   // ------------------------------------------------------
   // START: helper methods
+
+
 
   //  END:  helper methods
   // ------------------------------------------------------
@@ -87,7 +92,7 @@ export class PlayerDataForm extends LitElement {
         : null;
 
       if (initial === null || initial !== value) {
-        if (event.target.id.indexOf('family') > -1) {
+        if (event.target.id.includes('family')) {
           this._familyName = value;
         } else {
           this._givenName = value;
@@ -95,6 +100,7 @@ export class PlayerDataForm extends LitElement {
         const normalised = normaliseName(this._givenName + this._familyName);
 
         this._isDupe = nameIsDuplicate(normalised, this.normalisedNames);
+        this._canSave = !this._isDupe;
       }
     }
   }
@@ -241,6 +247,7 @@ export class PlayerDataForm extends LitElement {
           <p>
             <button
               .class="${btnCls}"
+              ?disabled=${!this._canSave}
               type="submit"
               value="${label.toLocaleLowerCase()}">
               ${label} <span class="sr-only">player</span>
